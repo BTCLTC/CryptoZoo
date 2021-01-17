@@ -1,2 +1,15 @@
-# CryptoZoo
-十二生肖NFT游戏
+# umi project
+
+## Getting Started
+
+Install dependencies,
+
+```bash
+$ yarn
+```
+
+Start the dev server,
+
+```bash
+$ yarn start
+```
