@@ -1,6 +1,0 @@
-# 注释，忽略文件
-node_modules
-src/serviceWorker.ts
-.eslintrc.js
-*.js
-**/*.js
