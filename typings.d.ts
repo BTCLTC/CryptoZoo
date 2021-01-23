@@ -6,3 +6,9 @@ declare module '*.svg' {
   const url: string
   export default url
 }
+
+interface Window {
+  web3: any;
+  ethereum: any;
+}
+
