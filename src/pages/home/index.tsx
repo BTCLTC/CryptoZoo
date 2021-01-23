@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 
 import Nav from '@/components/navlink';
 import UnlockButton from '@/components/unlock-button';
@@ -11,6 +11,14 @@ import profileBtn from '../../asstes/images/profile-btn.png';
 import styles from './styles.less';
 
 export default () => {
+  const [isShow, setShow] = useState(false)
+  const [showResult, setShowResult] = useState(false)
+
+  const onClick = React.useCallback(() => {
+    // 开始砸蛋
+    setShow(true)
+  }, []);
+
   return (
     <div className={styles.container}>
       <div className={styles.bg}/>
@@ -25,8 +33,8 @@ export default () => {
         <img src={profileBtn} />
       </div>
 
-      <div className={styles['egg-container']}>
-        <div className={styles.egg}></div>
+      <div className={ isShow ? styles['egg-smash'] : styles['egg-container']}>
+        <div onClick={onClick} className={styles.egg}></div>
       </div>
     </div>
   );
