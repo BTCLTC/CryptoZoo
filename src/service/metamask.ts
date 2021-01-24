@@ -1,10 +1,17 @@
 import { fromWei, hexToNumberString } from 'web3-utils'
+import useUser from '@/hooks/user';
+
+const { setAddress, address } = useUser();
 
 /**
  * 判断是否处理连接状态
  */
-export const isConnected = (): boolean => {
-  return window.ethereum && window.ethereum.isConnected()
+export const isConnected = async (): Promise<boolean> => {
+  const data = await window.ethereum.request({ method: 'eth_accounts' })
+  if (data && Array.isArray(data) && data.length) {
+    return true
+  }
+  return false
 }
 
 /**
@@ -21,7 +28,7 @@ export const getAccount = async (): Promise<void> => {
   const data = await window.ethereum.request({ method: 'eth_accounts' })
   if (data && Array.isArray(data)) {
     if (data.length) {
-      address.value = data[0]
+      setAddress(data[0])
       getNetwork()
       getBalance()
     } else {
@@ -51,7 +58,7 @@ export const getNetwork = async (): Promise<void> => {
 export const getBalance = async (): Promise<void> => {
   const walletBalance = await window.ethereum.request({
     method: 'eth_getBalance',
-    params: [address.value, 'latest']
+    params: [address, 'latest']
   })
 
   const num = hexToNumberString(walletBalance)
@@ -83,7 +90,7 @@ export const walletListener = (): void => {
     // 授权地址改变
     if (accounts && Array.isArray(accounts)) {
       if (accounts.length) {
-        address.value = accounts[0]
+        setAddress(accounts[0])
         getBalance()
       } else {
         // 钱包锁定或者没有创建账户

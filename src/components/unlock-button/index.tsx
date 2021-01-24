@@ -1,5 +1,6 @@
 import React from 'react';
 import useUser from '@/hooks/user';
+import { getAccount } from '@/service/metamask'
 
 import styles from './styles.less';
 
@@ -16,13 +17,11 @@ const simpleAdress = (address: string) => {
 
 
 export default function UnlockButton() {
-  const { isLock, address, unLockWallet } = useUser();
+  const { address } = useUser();
 
   const onClick = React.useCallback(() => {
-    if (isLock) {
-      unLockWallet();
-    }
+    getAccount();
   }, []);
 
-  return <div onClick={onClick} className={styles['login-btn']}>{isLock ? 'Unlock Wallet' : simpleAdress(address)}</div>
+  return <div onClick={onClick} className={styles['login-btn']}>{address ? simpleAdress(address) : 'Unlock Wallet'}</div>
 }

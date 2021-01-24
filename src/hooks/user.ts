@@ -1,40 +1,22 @@
-import React, { useEffect, useState, useCallback } from 'react';
-
-/**
- * 判断钱包是否解锁
- */
-export const isUnlocked = async (): Promise<boolean> => {
-  return window.ethereum._metamask.isUnlocked()
-}
+import React, { useEffect, useState } from 'react';
+import { isConnected, getAccount } from '@/service/metamask'
 
 
 export default function useUser() {
 
-  const [isLock, setLock] = useState(false);
-  const [address, setAddress] = useState(window.sessionStorage.getItem('address'));
-
-  const handleLock = async () => {
-    const result = await window.ethereum._metamask.isUnlocked();
-
-    setLock(!result);
-  }
-
-  const unLockWallet = useCallback(async () => {
-    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-    const addr = accounts[0];
-    setAddress(addr);
-
-    window.sessionStorage.setItem('address', addr);
-  }, []);
+  const [address, setAddress] = useState('');
 
   useEffect(() => {
-    handleLock()
-  }, [isLock]);
+    // 首先判断是否连接过metamask
+    // 如果有连接授权，自动获取账户信息
+    const connect = isConnected()
+    console.log(connect)
+    getAccount()
+  }, [null]);
 
   return {
-    isLock,
-    unLockWallet,
     address,
+    setAddress
   }
 }
 

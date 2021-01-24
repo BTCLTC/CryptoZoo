@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-
+import useUser from '@/hooks/user';
 import Nav from '@/components/navlink';
 import UnlockButton from '@/components/unlock-button';
 
@@ -10,13 +10,22 @@ import profileBtn from '../../asstes/images/profile-btn.png';
 
 import styles from './styles.less';
 
+import { create } from '../../service/nft'
+
 export default () => {
-  const [isShow, setShow] = useState(false)
-  const [showResult, setShowResult] = useState(false)
+  const [isShow, setShow] = useState(false);
+  const [showResult, setShowResult] = useState(false);
+
+  const { address } = useUser();
 
   const onClick = React.useCallback(() => {
-    // 开始砸蛋
-    setShow(true)
+    if (address) {
+      // 开始砸蛋
+      setShow(true)
+      create()
+    } else {
+      alert('请先连接metamask钱包')
+    }
   }, []);
 
   return (
@@ -34,7 +43,7 @@ export default () => {
       </div>
 
       <div className={ isShow ? styles['egg-smash'] : styles['egg-container']}>
-        <div onClick={onClick} className={styles.egg}></div>
+        { isShow ? '' : <div onClick={onClick} className={styles.egg}></div> }
       </div>
     </div>
   );

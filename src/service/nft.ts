@@ -25,6 +25,7 @@ export const create = async () => {
   const contract = getSignerContract()
   // Return: uint8 （1 ~ 12）分别代表12个动物（12生肖顺序）
   const data = await contract.create()
+  console.log(data)
 }
 
 /**
