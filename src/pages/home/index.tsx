@@ -3,10 +3,10 @@ import useUser from '@/hooks/user';
 import Nav from '@/components/navlink';
 import UnlockButton from '@/components/unlock-button';
 
-import logo from '../../asstes/images/logo.png';
-import homeBtn from '../../asstes/images/home-btn.png';
-import marketBtn from '../../asstes/images/market-btn.png';
-import profileBtn from '../../asstes/images/profile-btn.png';
+import logo from '../../assets/images/logo.png';
+import homeBtn from '../../assets/images/home-btn.png';
+import marketBtn from '../../assets/images/market-btn.png';
+import profileBtn from '../../assets/images/profile-btn.png';
 
 import styles from './styles.less';
 
