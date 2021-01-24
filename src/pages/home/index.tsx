@@ -19,7 +19,6 @@ export default () => {
   const { address, setAddress } = useUser();
 
   const onClick = React.useCallback(async () => {
-    console.log('address: ', address)
     if (address) {
       const zoo = await create()
       console.log(zoo)
@@ -31,7 +30,7 @@ export default () => {
         setAddress(addr)
       }
     }
-  }, []);
+  }, [address]);
 
   return (
     <div className={styles.container}>
