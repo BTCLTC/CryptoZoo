@@ -10,21 +10,26 @@ import profileBtn from '../../asstes/images/profile-btn.png';
 
 import styles from './styles.less';
 
+import { getAccount } from '@/service/metamask'
 import { create } from '../../service/nft'
 
 export default () => {
   const [isShow, setShow] = useState(false);
-  const [showResult, setShowResult] = useState(false);
 
-  const { address } = useUser();
+  const { address, setAddress } = useUser();
 
-  const onClick = React.useCallback(() => {
+  const onClick = React.useCallback(async () => {
+    console.log('address: ', address)
     if (address) {
-      // 开始砸蛋
+      const zoo = await create()
+      console.log(zoo)
+      // 显示砸蛋动效
       setShow(true)
-      create()
     } else {
-      alert('请先连接metamask钱包')
+      const addr = await getAccount()
+      if (addr) {
+        setAddress(addr)
+      }
     }
   }, []);
 

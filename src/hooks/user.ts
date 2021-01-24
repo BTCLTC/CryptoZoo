@@ -7,12 +7,19 @@ export default function useUser() {
   const [address, setAddress] = useState('');
 
   useEffect(() => {
+    init()
+  }, [null]);
+
+  const init = async () => {
     // 首先判断是否连接过metamask
     // 如果有连接授权，自动获取账户信息
-    const connect = isConnected()
-    console.log(connect)
-    getAccount()
-  }, [null]);
+    if (await isConnected()) {
+      const addr = await getAccount()
+      if (addr) {
+        setAddress(addr)
+      }
+    }
+  }
 
   return {
     address,

@@ -1,7 +1,4 @@
 import { fromWei, hexToNumberString } from 'web3-utils'
-import useUser from '@/hooks/user';
-
-const { setAddress, address } = useUser();
 
 /**
  * 判断是否处理连接状态
@@ -24,13 +21,13 @@ export const isUnlocked = async (): Promise<boolean> => {
 /**
  * 获取钱包账户
  */
-export const getAccount = async (): Promise<void> => {
-  const data = await window.ethereum.request({ method: 'eth_accounts' })
+export const getAccount = async (): Promise<string | void> => {
+  const data = await window.ethereum.request({ method: 'eth_requestAccounts' })
   if (data && Array.isArray(data)) {
     if (data.length) {
-      setAddress(data[0])
       getNetwork()
-      getBalance()
+      getBalance(data[0])
+      return data[0]
     } else {
       // 钱包锁定或者没有创建账户
       checkWallet()
@@ -55,7 +52,7 @@ export const getNetwork = async (): Promise<void> => {
 /**
  * 获取账户余额
  */
-export const getBalance = async (): Promise<void> => {
+export const getBalance = async (address: string): Promise<string> => {
   const walletBalance = await window.ethereum.request({
     method: 'eth_getBalance',
     params: [address, 'latest']
@@ -63,7 +60,7 @@ export const getBalance = async (): Promise<void> => {
 
   const num = hexToNumberString(walletBalance)
   const number = fromWei(num)
-  console.log(number)
+  return number
 }
 
 /**
@@ -90,8 +87,9 @@ export const walletListener = (): void => {
     // 授权地址改变
     if (accounts && Array.isArray(accounts)) {
       if (accounts.length) {
-        setAddress(accounts[0])
-        getBalance()
+        alert('地址变更')
+        getBalance(accounts[0])
+        return accounts[0]
       } else {
         // 钱包锁定或者没有创建账户
         checkWallet()
