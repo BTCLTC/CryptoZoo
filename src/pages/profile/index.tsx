@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AnimalCard from '@/components/animal-card';
 import { LevelListData } from '@/data'
+import useUser from '@/hooks/user';
+import { getBalanceOf, getTokenOfOwnerByIndex, getAnimalInfo } from '@/service/nft'
 
 import styles from './styles.less';
 
@@ -35,11 +37,34 @@ const mockData = [{
 }]
 
 export default () => {
+
+  const { address } = useUser();
+
   const [level, setLevel] = React.useState('all');
 
   const onLevelItemClick = React.useCallback((id: string) => {
     setLevel(id);
   }, [level]);
+
+  useEffect(() => {
+    init()
+  }, [address]);
+
+  const init = async () => {
+    // 根据用户的钱包地址，获取其所有生肖
+    if (address) {
+      // 获取生肖索引
+      const index = await getBalanceOf(address)
+      console.log(index)
+      // 根据索引，循环获取生肖的tokenID
+      for (let i = 0; i < index; i++) {
+        const tokenID = await getTokenOfOwnerByIndex(address, i)
+        // 根据生肖的tokenID，获取生肖信息
+        const data = await getAnimalInfo(tokenID)
+        console.log(data)
+      }
+    }
+  }
 
   return (
     <div>

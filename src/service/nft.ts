@@ -118,12 +118,22 @@ export const transfer = async (fromAddress: string, toAddress: string, tokenId: 
 }
 
 /**
- * 获取用户生肖
+ * 获取用户生肖数量[序号]
  */
 export const getBalanceOf = async (address: string) => {
   const contract = getContract()
 
   const data = await contract.balanceOf(address)
+  return parseInt(data)
+}
+
+/**
+ * 根据序号，获取生肖TokenID
+ */
+export const getTokenOfOwnerByIndex = async (address: string, index: number) => {
+  const contract = getContract()
+
+  return await contract.tokenOfOwnerByIndex(address, index)
 }
 
 /**
@@ -132,7 +142,7 @@ export const getBalanceOf = async (address: string) => {
 export const getAnimalInfo = async (tokenId: string) => {
   const contract = getContract()
 
-  const data = await contract.getAnimalInfo(tokenId)
+  return await contract.getAnimalInfo(tokenId)
 }
 
 /**
