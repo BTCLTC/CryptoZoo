@@ -1,34 +1,9 @@
 import React from 'react';
 import AnimalCard from '@/components/animal-card';
+import { LevelListData } from '@/data'
 
 import styles from './styles.less';
 
-const LevelListData = [
-  {
-    title: '全部',
-    id: 'all',
-  },
-  {
-    title: '一级',
-    id: '1',
-  },
-  {
-    title: '二级',
-    id: '2',
-  },
-  {
-    title: '三级',
-    id: '3',
-  },
-  {
-    title: '四级',
-    id: '4',
-  },
-  {
-    title: '五级',
-    id: '5',
-  },
-]
 
 const mockData = [{
   id: 1,
@@ -58,6 +33,7 @@ const mockData = [{
     count: 1,
   }
 }]
+
 export default () => {
   const [level, setLevel] = React.useState('all');
 
@@ -82,7 +58,7 @@ export default () => {
             return <AnimalCard className={styles.item} from="profile" id={item.id} key={item.id} data={item.data}></AnimalCard>
           })
         }
-          
+
       </div>
     </div>
   );

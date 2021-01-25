@@ -1,5 +1,7 @@
 import { ethers } from 'ethers'
+import { toWei } from 'web3-utils'
 import abi from '../abi/abi.json'
+import { zoo, zooType } from '@/data'
 
 const contractAddress = '0xbbe70a97099f7ee58967c9323daa8901f076ebb5'
 
@@ -23,9 +25,11 @@ const getSignerContract = () => {
  */
 export const create = async () => {
   const contract = getSignerContract()
-  // Return: uint8 （1 ~ 12）分别代表12个动物（12生肖顺序）
-  const data = await contract.create()
-  console.log(data);
+  const tx = await contract.create({ value: toWei('0.01') })
+  await tx.wait()
+  contract.on('Creat', (address, animal: zooType, tokenID, event) => {
+    alert('恭喜您，获得了萌宠：' + zoo[animal])
+  })
 }
 
 /**

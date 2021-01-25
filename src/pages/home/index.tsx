@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { NavLink } from 'umi';
 import useUser from '@/hooks/user';
 import Nav from '@/components/navlink';
 import UnlockButton from '@/components/unlock-button';
@@ -42,8 +43,12 @@ export default () => {
 
       <div className={styles['route-btn']}>
         <img src={homeBtn} />
-        <img src={marketBtn} />
-        <img src={profileBtn} />
+        <NavLink to="/market">
+          <img src={marketBtn} />
+        </NavLink>
+        <NavLink to="/profile">
+          <img src={profileBtn} />
+        </NavLink>
       </div>
 
       <div className={ isShow ? styles['egg-smash'] : styles['egg-container']}>

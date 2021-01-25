@@ -31,7 +31,9 @@ export default function AnimalCard(props: Props) {
 
   const renderFooter = React.useCallback(() => {
     if (from === 'market') {
-      return <span onClick={onPurchaseHandler}>{data.price}ETH 购买</span>
+      return <div className={styles['btn-buy']} onClick={onPurchaseHandler}>
+        <span>{data.price}ETH 购买</span>
+      </div>
     }
 
     const { status } = data;
@@ -46,7 +48,7 @@ export default function AnimalCard(props: Props) {
 
   return <div className={`${cls} ${className}`}>
     {from === 'profile' && <span className={styles.tags}>赠送</span>}
-    {from === 'profile' && <span className={styles.count}>{data.count}</span>}
+    <span className={styles.count}>{data.count}</span>
     {renderFooter()}
   </div>
 }
