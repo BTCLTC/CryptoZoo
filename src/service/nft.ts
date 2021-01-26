@@ -146,7 +146,7 @@ export const getAnimalInfo = async (tokenId: string) => {
 }
 
 /**
- * 根据级别和动物，查询是否有人出售
+ * 根据级别，查询是否有人出售
  */
 export const getIsSale = async (level: number) => {
   const contract = getContract()
@@ -155,7 +155,7 @@ export const getIsSale = async (level: number) => {
 }
 
 /**
- * 根据级别和无动查询是否有人购买
+ * 根据级别，查询是否有人购买
  */
 export const getIsOnPurchased = async (level: number) => {
   const contract = getContract()

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AnimalCard from '@/components/animal-card';
 import { LevelListData } from '@/data'
+import useUser from '@/hooks/user';
 
 import styles from './styles.less';
 
@@ -35,7 +36,17 @@ const mockData = [{
 }]
 
 export default () => {
+
+  const { address } = useUser();
   const [level, setLevel] = React.useState('all');
+
+  useEffect(() => {
+    init()
+  }, [address]);
+
+  const init = async () => {
+
+  }
 
   const onLevelItemClick = React.useCallback((id: string) => {
     setLevel(id);

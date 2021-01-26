@@ -17,14 +17,12 @@ const simpleAdress = (address: string) => {
 
 
 export default function UnlockButton() {
-  const { address, unlockWallet, setAddress, } = useUser();
+  const { address, setAddress, } = useUser();
 
-  const onClick = React.useCallback(() => {
-    debugger
+  const onClick = React.useCallback(async () => {
     if(!address) {
-      unlockWallet();
-    } else {
-      setAddress('')
+      const addr = await getAccount();
+      addr && setAddress(addr);
     }
   }, [address]);
 
