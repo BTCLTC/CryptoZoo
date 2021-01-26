@@ -23,7 +23,8 @@ export default function useUser() {
 
   return {
     address,
-    setAddress
+    setAddress,
+    unlockWallet: init,
   }
 }
 
