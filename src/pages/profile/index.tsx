@@ -37,18 +37,12 @@ const mockData = [{
 }]
 
 export default () => {
-
-  const { address } = useUser();
-
   const [level, setLevel] = React.useState('all');
+  const { address } = useUser();
 
   const onLevelItemClick = React.useCallback((id: string) => {
     setLevel(id);
   }, [level]);
-
-  useEffect(() => {
-    init()
-  }, [address]);
 
   const init = async () => {
     // 根据用户的钱包地址，获取其所有生肖
@@ -65,6 +59,11 @@ export default () => {
       }
     }
   }
+
+  useEffect(() => {
+    init()
+  }, [address]);
+
 
   return (
     <div>

@@ -17,11 +17,16 @@ const simpleAdress = (address: string) => {
 
 
 export default function UnlockButton() {
-  const { address } = useUser();
+  const { address, unlockWallet, setAddress, } = useUser();
 
   const onClick = React.useCallback(() => {
-    getAccount();
-  }, []);
+    debugger
+    if(!address) {
+      unlockWallet();
+    } else {
+      setAddress('')
+    }
+  }, [address]);
 
   return <div onClick={onClick} className={styles['login-btn']}>{address ? simpleAdress(address) : 'Unlock Wallet'}</div>
 }

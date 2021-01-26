@@ -17,7 +17,7 @@ export default ({ children, }: Props) => {
       <div>
         <Nav />
       </div>
-      {/* <UnlockButton /> */}
+      <UnlockButton />
     </header>
     <main>{children}</main>
   </div>
