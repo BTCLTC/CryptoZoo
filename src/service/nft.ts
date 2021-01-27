@@ -1,7 +1,6 @@
 import { ethers } from 'ethers'
 import { toWei } from 'web3-utils'
 import abi from '../abi/abi.json'
-import { zoo, zooType } from '@/data'
 
 const contractAddress = '0xbbe70a97099f7ee58967c9323daa8901f076ebb5'
 
@@ -9,14 +8,14 @@ const getProvider = () => {
   return new ethers.providers.Web3Provider(window.ethereum)
 }
 
-const getContract = () => {
+export const getContract = () => {
   return new ethers.Contract(contractAddress, abi, getProvider())
 }
 
 /**
  * 需要签名的contract
  */
-const getSignerContract = () => {
+export const getSignerContract = () => {
   return new ethers.Contract(contractAddress, abi, getProvider().getSigner())
 }
 
@@ -27,9 +26,6 @@ export const create = async () => {
   const contract = getSignerContract()
   const tx = await contract.create({ value: toWei('0.01') })
   await tx.wait()
-  contract.on('Creat', (address, animal: zooType, tokenID, event) => {
-    alert('恭喜您，获得了萌宠：' + zoo[animal])
-  })
 }
 
 /**

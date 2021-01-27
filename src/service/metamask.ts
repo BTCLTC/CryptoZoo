@@ -22,6 +22,8 @@ export const isUnlocked = async (): Promise<boolean> => {
  * 获取钱包账户
  */
 export const getAccount = async (): Promise<string | void> => {
+  // 进行监听钱包
+  walletListener()
   const data = await window.ethereum.request({ method: 'eth_requestAccounts' })
   if (data && Array.isArray(data)) {
     if (data.length) {
@@ -33,8 +35,6 @@ export const getAccount = async (): Promise<string | void> => {
       checkWallet()
     }
   }
-  // 进行监听钱包
-  walletListener()
 }
 
 /**
