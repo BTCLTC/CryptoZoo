@@ -9,7 +9,7 @@ contract.on('Creat', (address, animal: zooType, tokenID, event) => {
 })
 
 // 监听购买事件
-contract.on('Buy', (address1, address2, token1, token2) => {
+contract.on('Buy', (buyer, seller, tokenID, price) => {
 
 })
 

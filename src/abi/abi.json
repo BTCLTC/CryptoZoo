@@ -312,6 +312,40 @@
 				"type": "uint256"
 			}
 		],
+		"name": "animalInfo",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenID",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint8",
+				"name": "animalLevel",
+				"type": "uint8"
+			},
+			{
+				"internalType": "uint8",
+				"name": "animalType",
+				"type": "uint8"
+			},
+			{
+				"internalType": "uint256",
+				"name": "price",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
 		"name": "animalPrice",
 		"outputs": [
 			{
@@ -635,6 +669,62 @@
 		"inputs": [
 			{
 				"internalType": "address",
+				"name": "_user",
+				"type": "address"
+			},
+			{
+				"internalType": "uint8",
+				"name": "_level",
+				"type": "uint8"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_index",
+				"type": "uint256"
+			}
+		],
+		"name": "getUserInfo",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "tokenID",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint8",
+						"name": "animalLevel",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint8",
+						"name": "animalType",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct CryptoZoo.Animal[]",
+				"name": "",
+				"type": "tuple[]"
+			},
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
 				"name": "owner",
 				"type": "address"
 			},
@@ -645,6 +735,25 @@
 			}
 		],
 		"name": "isApprovedForAll",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "isTokenExist",
 		"outputs": [
 			{
 				"internalType": "bool",
@@ -693,19 +802,14 @@
 				"internalType": "uint8",
 				"name": "_level",
 				"type": "uint8"
-			},
-			{
-				"internalType": "uint8",
-				"name": "_type",
-				"type": "uint8"
 			}
 		],
 		"name": "onPurchase",
 		"outputs": [
 			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
+				"internalType": "bool[]",
+				"name": "ret",
+				"type": "bool[]"
 			}
 		],
 		"stateMutability": "view",
@@ -717,19 +821,14 @@
 				"internalType": "uint8",
 				"name": "_level",
 				"type": "uint8"
-			},
-			{
-				"internalType": "uint8",
-				"name": "_type",
-				"type": "uint8"
 			}
 		],
 		"name": "onSale",
 		"outputs": [
 			{
-				"internalType": "bool",
+				"internalType": "bool[]",
 				"name": "",
-				"type": "bool"
+				"type": "bool[]"
 			}
 		],
 		"stateMutability": "view",
@@ -1127,6 +1226,35 @@
 			}
 		],
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint8",
+				"name": "",
+				"type": "uint8"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "userInfo",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	}
 ]
