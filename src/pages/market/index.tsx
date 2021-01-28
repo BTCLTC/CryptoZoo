@@ -91,15 +91,12 @@ export default () => {
         5: level5BuyData
       }
     }
-    console.error(obj)
     setMarketData(obj)
-    console.warn(marketData)
 
     handleData('buy', level2SellData)
   }
 
   const handleData = (_type: 'buy' | 'sell', Data: any) => {
-    console.log(Data)
     const zooData = Data.map((status: boolean, index: number) => {
       return {
         id: index + 1,
@@ -117,14 +114,13 @@ export default () => {
   const onTypeClick = useCallback((_type: 'buy' | 'sell') => {
     setType(_type)
     handleData(_type, marketData[_type][level])
-  }, [type]);
+  }, [type, marketData]);
 
   // 点击等级
   const onLevelItemClick = useCallback((id: '2' | '3' | '4' | '5') => {
     setLevel(id);
-    console.warn(marketData)
     handleData(type, marketData[type][id])
-  }, [level]);
+  }, [level, marketData]);
 
   return (
     <div>
