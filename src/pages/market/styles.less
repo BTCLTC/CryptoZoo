@@ -31,9 +31,54 @@
 
 .list-container {
   display: flex;
+  flex-wrap: wrap;
   margin-top: 20px;
 
   .item {
     margin-right: 11px;
+    margin-bottom: 11px;
   }
+}
+
+.type-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.type-buy, .type-sell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 26px;
+  text-align: center;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.type-buy {
+  border: 1px solid #D9D9D9;
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+
+  &.type-active {
+    border-right: 1px solid #F19C07;
+  }
+}
+
+.type-sell {
+  border: 1px solid #D9D9D9;
+  border-radius: 0 4px 4px 0;
+  border-left: none;
+
+  &.type-active {
+    border-left: 1px solid #F19C07;
+  }
+}
+
+.type-active {
+  color: #F19C07;
+  border-color: #F19C07;
 }

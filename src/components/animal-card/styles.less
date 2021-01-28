@@ -109,24 +109,30 @@
   text-align: center;
 }
 
-.btn-buy {
+.btn-trade {
   position: absolute;
   top: 78%;
   left: 50%;
   transform: translate(-50%, 0);
   display: inline-flex;
-  color: #F19C07;
-  border: 1px solid #F19C07;
-  border-radius: 3px;
-  transition: all 0.2s ease-in-out;
-  cursor: pointer;
+  color: #D9D9D9;
+  border: 1px solid #D9D9D9;
+  cursor: not-allowed;
 
-  &:hover {
-    color: #fff;
-    background-color: #F19C07;
+  .trade {
+    color: #F19C07;
+    border: 1px solid #F19C07;
+    border-radius: 3px;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+
+    &:hover {
+      color: #fff;
+      background-color: #F19C07;
+    }
   }
 }
 
-.btn-buy span {
-  padding: 6px 10px;
+.btn-trade span {
+  padding: 6px 16px;
 }

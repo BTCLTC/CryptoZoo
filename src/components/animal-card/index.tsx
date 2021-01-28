@@ -13,7 +13,8 @@ interface Props {
   from: 'market' | 'profile';
   className?: string;
   data: {
-    price: number;
+    type: 'buy' | 'sell';
+    isTrade: boolean;
     level: number;
     // 状态，售卖中，已卖，未卖
     status: string;
@@ -31,8 +32,9 @@ export default function AnimalCard(props: Props) {
 
   const renderFooter = React.useCallback(() => {
     if (from === 'market') {
-      return <div className={styles['btn-buy']} onClick={onPurchaseHandler}>
-        <span>{data.price}ETH 购买</span>
+      const { type, isTrade } = data;
+      return <div className={isTrade ? `${styles['btn-trade']} ${styles['trade']}` : styles['btn-trade']} onClick={onPurchaseHandler}>
+        <span>{ type == 'buy' ? '购买' : '出售' }</span>
       </div>
     }
 
@@ -48,7 +50,7 @@ export default function AnimalCard(props: Props) {
 
   return <div className={`${cls} ${className}`}>
     {from === 'profile' && <span className={styles.tags}>赠送</span>}
-    <span className={styles.count}>{data.count}</span>
+    {from === 'profile' && <span className={styles.count}>{data.count}</span>}
     {renderFooter()}
   </div>
 }
