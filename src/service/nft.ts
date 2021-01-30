@@ -147,12 +147,7 @@ export const getAnimalInfo = async (tokenId: string) => {
 export const getIsSale = async (level: number) => {
   const contract = getContract()
 
-  const data = await contract.onSale(level).catch((e) => {
-    console.log(e)
-  })
-
-  console.log('data: ', data)
-  return data;
+  return await contract.onSale(level)
 }
 
 /**

@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { Spin, Modal, Input } from 'antd';
 import AnimalCard from '@/components/animal-card';
 import useUser from '@/hooks/user';
-import { getIsSale, getIsOnPurchased } from '@/service/nft'
+import { getIsSale, getIsOnPurchased, buy, sell } from '@/service/nft'
 import { zoo } from '@/data'
 
 import styles from './styles.less';
@@ -55,10 +56,12 @@ export default () => {
   }
 
   const { address } = useUser();
+  const [loading, setLoading] = useState(true);
   const [type, setType] = useState('buy' as 'buy' | 'sell');
   const [level, setLevel] = useState('2' as '2' | '3' | '4' | '5');
   const [data, setData] = useState(_zoo);
   const [marketData, setMarketData] = useState(_marketData);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
 
 
@@ -91,36 +94,53 @@ export default () => {
         5: level5BuyData
       }
     }
-    setMarketData(obj)
-
-    handleData('buy', level2SellData)
+    setMarketData(obj);
+    handleData(level2SellData);
   }
 
-  const handleData = (_type: 'buy' | 'sell', Data: any) => {
+  // 点击购买/出售
+  const onTypeClick = useCallback((_type: 'buy' | 'sell') => {
+    setType(_type);
+    handleData(marketData[_type][level]);
+  }, [loading, type, data, marketData]);
+
+  // 点击等级
+  const onLevelItemClick = useCallback((id: '2' | '3' | '4' | '5') => {
+    setLevel(id);
+    handleData(marketData[type][id]);
+  }, [loading, type, level, data, marketData]);
+
+  const handleData = (Data: any) => {
+    setLoading(true);
     const zooData = Data.map((status: boolean, index: number) => {
       return {
         id: index + 1,
         from: 'market',
         data: {
-          type: _type,
+          type,
           isTrade: status
         }
       }
     });
     setData(zooData);
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
   }
 
-  // 点击购买/出售
-  const onTypeClick = useCallback((_type: 'buy' | 'sell') => {
-    setType(_type)
-    handleData(_type, marketData[_type][level])
-  }, [type, marketData]);
+  const handleOk = useCallback(() => {
 
-  // 点击等级
-  const onLevelItemClick = useCallback((id: '2' | '3' | '4' | '5') => {
-    setLevel(id);
-    handleData(type, marketData[type][id])
-  }, [level, marketData]);
+  }, [isModalVisible])
+
+  const handleCancel = useCallback(() => {
+    setIsModalVisible(false)
+  }, [isModalVisible])
+
+  // 点击购买或者出售
+  const handlecClickCallback = (_type: 'buy' | 'sell') => {
+    console.warn(_type);
+    setIsModalVisible(true);
+  }
 
   return (
     <div>
@@ -137,14 +157,25 @@ export default () => {
         </div>
       </div>
 
-      <div className={styles['list-container']}>
+      <Spin spinning={loading}>
+        <div className={styles['list-container']}>
         {
           data.map(item => {
-            return <AnimalCard className={styles.item} from="market" id={item.id} key={item.id} data={item.data}></AnimalCard>
+            return <AnimalCard clickCallback={(_type: 'buy' | 'sell') => handlecClickCallback(_type)} className={styles.item} from="market" id={item.id} key={item.id} data={item.data}></AnimalCard>
           })
         }
-
       </div>
+      </Spin>
+
+      <Modal
+        title={type == "buy" ? "盲拍 - 购买" : "盲拍 - 出售"}
+        visible={isModalVisible}
+        okText="确定"
+        cancelText="取消"
+        onOk={handleOk}
+        onCancel={handleCancel}>
+        <Input placeholder="请输入盲拍价格" suffix="ETH" />
+      </Modal>
     </div>
   );
 }

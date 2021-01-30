@@ -12,6 +12,7 @@ interface Props {
   id: number;
   from: 'market' | 'profile';
   className?: string;
+  clickCallback?: Function;
   data: {
     type: 'buy' | 'sell';
     isTrade: boolean;
@@ -23,17 +24,20 @@ interface Props {
 }
 
 export default function AnimalCard(props: Props) {
-  const { id, from, data, className } = props;
+  const { id, from, data, className, clickCallback } = props;
   const cls = getAnimalBg(id);
 
-  const onPurchaseHandler = () => {
-
+  const onPurchaseHandler = (isTrade: boolean, type: 'buy' | 'sell') => {
+    // if (clickCallback && isTrade) {
+    if (clickCallback) {
+      clickCallback(type)
+    }
   }
 
   const renderFooter = React.useCallback(() => {
     if (from === 'market') {
       const { type, isTrade } = data;
-      return <div className={isTrade ? `${styles['btn-trade']} ${styles['trade']}` : styles['btn-trade']} onClick={onPurchaseHandler}>
+      return <div className={isTrade ? `${styles['btn-trade']} ${styles['trade']}` : styles['btn-trade']} onClick={() => onPurchaseHandler(isTrade, type)}>
         <span>{ type == 'buy' ? '购买' : '出售' }</span>
       </div>
     }
