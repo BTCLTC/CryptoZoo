@@ -1,4 +1,4 @@
-import { ethers } from 'ethers'
+import { ethers, BigNumber } from 'ethers'
 import { toWei } from 'web3-utils'
 import abi from '../abi/abi.json'
 
@@ -50,10 +50,10 @@ export const redeem = async (token: string) => {
 /**
  * 竞拍出售
  */
-export const sellBids = async (token: string, price: number) => {
+export const sellBids = async (token: string, price: string) => {
   const contract = getSignerContract()
 
-  const status = await contract.sellBids(token, price)
+  return await contract.sellBids(token, BigNumber.from(price))
 }
 
 /**
@@ -62,10 +62,11 @@ export const sellBids = async (token: string, price: number) => {
  * @param type: 生肖
  * @param price: 价格
  */
-export const buyBids = async (level: number, type: number, price: number) => {
+export const buyBids = async (level: number, type: number, price: string) => {
+  console.log(price)
   const contract = getSignerContract()
 
-  const status = await contract.buyBids(level, type, price)
+  return await contract.buyBids(level, type, BigNumber.from(price))
 }
 
 /**
@@ -84,24 +85,6 @@ export const cancleBuy = async (level: number, type: number) => {
   const contract = getSignerContract()
 
   const status = await contract.cancleBuy(level, type)
-}
-
-/**
- * 主动购买
- */
-export const buy = async (level: number, type: number, maxPrice: number) => {
-  const contract = getSignerContract()
-
-  const status = await contract.cancleBuy(level, type, maxPrice)
-}
-
-/**
- * 主动出售
- */
-export const sell = async (token: string, minPrice: number) => {
-  const contract = getSignerContract()
-
-  const status = await contract.cancleBuy(token, minPrice)
 }
 
 /**

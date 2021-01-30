@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { Modal } from 'antd';
 
 import NumericInput from '@/components/numerical-input';
-import { buyBids, upgrade } from '@/service/nft';
+import { buyBids, sellBids, upgrade } from '@/service/nft';
 import styles from './styles.less';
 
 
@@ -16,7 +16,6 @@ interface Props {
   id: number;
   from: 'market' | 'profile';
   className?: string;
-  clickCallback?: Function;
   data: {
     type: 'buy' | 'sell';
     isTrade: boolean;
@@ -28,28 +27,52 @@ interface Props {
 }
 
 export default function AnimalCard(props: Props) {
-  const { id, from, data, className, clickCallback } = props;
+
+  const [price, setPrice] = useState('');
+
+  const { id, from, data, className } = props;
   const cls = getAnimalBg(id);
 
-  const onPurchaseHandler = (isTrade: boolean, type: 'buy' | 'sell') => {
-    // if (clickCallback && isTrade) {
-    if (clickCallback) {
-      clickCallback(type)
-    }
+  // 市场的购买/出售
+  const onMarketHandler = useCallback((isTrade: boolean, level: number) => {
+    // if (isTrade) {
+
+    // }
+    Modal.confirm({
+      title: '盲拍 - 购买',
+      // icon: <ExclamationCircleOutlined />,
+      content: <NumericInput onChange={priceChange} />,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async (e) => {
+        console.log(price)
+        const status = await buyBids(level, id, price)
+        console.log(status);
+        console.log(e)
+      }
+    });
+  }, [price]);
+
+  const priceChange = (value: string) => {
+    setPrice(value)
   }
+
   const onRebuyHandler = () => {
 
   }
 
   const onSellHandler = (token: string) => {
     Modal.confirm({
-      title: '请输入价格',
+      title: '出售',
       // icon: <ExclamationCircleOutlined />,
-      content: <NumericInput />,
+      content: <NumericInput onChange={priceChange} />,
       okText: '确认',
       cancelText: '取消',
+      onOk: async (e) => {
+        const status = await sellBids(token, price)
+        console.log(status);
+      }
     });
-    // sellBids(token, )
   }
 
   const onUpgradeHandler = () => {
@@ -58,9 +81,9 @@ export default function AnimalCard(props: Props) {
 
   const renderFooter = React.useCallback(() => {
     if (from === 'market') {
-      const { type, isTrade } = data;
-      return <div className={isTrade ? `${styles['btn-trade']} ${styles['trade']}` : styles['btn-trade']} onClick={() => onPurchaseHandler(isTrade, type)}>
-        <span>{type == 'buy' ? '购买' : '出售'}</span>
+      const { isTrade, level } = data;
+      return <div className={isTrade ? `${styles['btn-trade']} ${styles['trade']}` : styles['btn-trade']} onClick={() => onMarketHandler(isTrade, level)}>
+        <span>购买</span>
       </div>
     }
 

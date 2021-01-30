@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { Spin, Modal, Input } from 'antd';
+import { Spin } from 'antd';
 import AnimalCard from '@/components/animal-card';
 import useUser from '@/hooks/user';
-import { getIsSale, getIsOnPurchased, buy, sell } from '@/service/nft'
-import { zoo } from '@/data'
+import { getIsSale, getIsOnPurchased } from '@/service/nft'
 
 import styles from './styles.less';
 
@@ -44,14 +43,10 @@ export default () => {
   }
 
   const { address } = useUser();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [type, setType] = useState('buy' as 'buy' | 'sell');
   const [level, setLevel] = useState('2' as '2' | '3' | '4' | '5');
   const [marketData, setMarketData] = useState(_marketData);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [price, setPrice] = useState('');
-
-
 
   useEffect(() => {
     init();
@@ -98,7 +93,8 @@ export default () => {
         from: 'market',
         data: {
           type,
-          isTrade: status
+          isTrade: status,
+          level
         }
       }
     });
@@ -106,33 +102,12 @@ export default () => {
     return zooData;
   }
 
-  const handleOk = useCallback(() => {
-
-  }, [isModalVisible])
-
-  const handleCancel = useCallback(() => {
-    setPrice('');
-    setIsModalVisible(false);
-  }, [isModalVisible])
-
-  // 点击购买或者出售
-  const handlecClickCallback = (_type: 'buy' | 'sell') => {
-    console.warn(_type);
-    setIsModalVisible(true);
-  }
-
-  const inputChange = useCallback((e: HTMLInputElement) => {
-    // @ts-ignore
-    setPrice(e.target.value);
-  }, [price]);
-
   const dataSource = useMemo(handleData, [type, level, marketData]);
 
   return (
     <div>
       <div className={styles['type-container']}>
-        <span className={type == 'buy' ? `${styles['type-buy']}  ${styles['type-active']}` : styles['type-buy']} onClick={() => onTypeClick('buy')}>购买</span>
-        <span className={type == 'sell' ? `${styles['type-sell']} ${styles['type-active']}` : styles['type-sell']} onClick={() => onTypeClick('sell')}>出售</span>
+        <span className={`${styles['type-buy']}  ${styles['type-active']}`} onClick={() => onTypeClick('buy')}>购买</span>
       </div>
       <div className={styles['level-container']}>
         <span className={styles.level} >所属级别</span>
@@ -147,21 +122,11 @@ export default () => {
         <div className={styles['list-container']}>
           {
             dataSource.map(item => {
-              return <AnimalCard clickCallback={(_type: 'buy' | 'sell') => handlecClickCallback(_type)} className={styles.item} from="market" id={item.id} key={item.id} data={item.data}></AnimalCard>
+              return <AnimalCard className={styles.item} from="market" id={item.id} key={item.id} data={item.data}></AnimalCard>
             })
           }
         </div>
       </Spin>
-
-      <Modal
-        title={type == "buy" ? "盲拍 - 购买" : "盲拍 - 出售"}
-        visible={isModalVisible}
-        okText="确定"
-        cancelText="取消"
-        onOk={handleOk}
-        onCancel={handleCancel}>
-        <Input placeholder="请输入盲拍价格" suffix="ETH" onChange={(e) => inputChange(e)}/>
-      </Modal>
     </div>
   );
 }

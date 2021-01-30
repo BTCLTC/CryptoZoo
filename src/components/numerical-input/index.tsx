@@ -2,7 +2,7 @@ import React from 'react';
 import { Input } from 'antd';
 
 function NumericInput(props) {
-  const [innerValue, setInnerValue] = React.useState(props.initValue);
+  const [innerValue, setInnerValue] = React.useState(props.initValue || '');
 
   const onChange = e => {
     const { value } = e.target;
@@ -38,6 +38,7 @@ function NumericInput(props) {
       onChange={onChange}
       onBlur={onBlur}
       placeholder="请输入价格"
+      suffix="ETH"
       maxLength={25}
     />
   );

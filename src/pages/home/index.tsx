@@ -21,7 +21,7 @@ export default () => {
 
   const onClick = React.useCallback(async () => {
     if (address) {
-      const zoo = await create()
+      await create()
       // 显示砸蛋动效
       setShow(true)
     } else {
