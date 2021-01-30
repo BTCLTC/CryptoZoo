@@ -6,7 +6,7 @@ import { buyBids, sellBids, upgrade } from '@/service/nft';
 import styles from './styles.less';
 
 
-const getAnimalBg = (id: number) => {
+export const getAnimalBg = (id: number) => {
   const cls = `${styles.animal} ${styles[`animal-${id}`]}`;
 
   return cls;

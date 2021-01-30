@@ -1,8 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import { NavLink } from 'umi';
+import { Spin, Modal } from 'antd';
 import useUser from '@/hooks/user';
-import Nav from '@/components/navlink';
 import UnlockButton from '@/components/unlock-button';
+import { zoo, zooType } from '@/data';
+import { getAnimalBg } from '@/components/animal-card'
 
 import logo from '../../assets/images/logo.png';
 import homeBtn from '../../assets/images/home-btn.png';
@@ -16,14 +18,27 @@ import { create } from '../../service/nft'
 
 export default () => {
   const [isShow, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [id, setId] = useState(1 as zooType);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const { address, setAddress } = useUser();
 
-  const onClick = React.useCallback(async () => {
+  const onClick = useCallback(async () => {
     if (address) {
-      await create()
-      // 显示砸蛋动效
-      setShow(true)
+      setLoading(true);
+      const data = await create();
+      if (data.tx.wait) {
+        // 监听砸蛋成功事件
+        data.contract.on('Creat', (address, animal: zooType, tokenID, event) => {
+          setId(animal);
+          setIsModalVisible(true);
+        });
+        await data.tx.wait();
+        // 显示砸蛋动效
+        setShow(true);
+      }
+      setLoading(false);
     } else {
       const addr = await getAccount()
       if (addr) {
@@ -31,6 +46,11 @@ export default () => {
       }
     }
   }, [address]);
+
+  const modalClose = () => {
+    setIsModalVisible(false);
+    setShow(false);
+  };
 
   return (
     <div className={styles.container}>
@@ -50,9 +70,18 @@ export default () => {
         </NavLink>
       </div>
 
-      <div className={ isShow ? styles['egg-smash'] : styles['egg-container']}>
-        { isShow ? '' : <div onClick={onClick} className={styles.egg}></div> }
-      </div>
+      <Spin spinning={loading}>
+        <div className={ isShow ? styles['egg-smash'] : styles['egg-container']}>
+          { isShow ? '' : <div onClick={onClick} className={styles.egg}></div> }
+        </div>
+      </Spin>
+
+      <Modal title="获得萌宠" onCancel={modalClose} footer={null} visible={isModalVisible}>
+        <div className={styles['center']}>
+          <div className={styles['title']}>恭喜您！获得了萌宠：{zoo[id]}</div>
+          <div className={getAnimalBg(id)}></div>
+        </div>
+      </Modal>
     </div>
   );
 }

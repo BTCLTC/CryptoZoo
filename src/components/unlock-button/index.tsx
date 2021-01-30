@@ -1,6 +1,6 @@
 import React from 'react';
 import useUser from '@/hooks/user';
-import { getAccount } from '@/service/metamask'
+import { getAccount } from '@/service/metamask';
 
 import styles from './styles.less';
 

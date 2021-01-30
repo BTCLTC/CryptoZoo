@@ -1,6 +1,6 @@
-import { ethers, BigNumber } from 'ethers'
-import { toWei } from 'web3-utils'
-import abi from '../abi/abi.json'
+import { ethers } from 'ethers';
+import { toWei } from 'web3-utils';
+import abi from '../abi/abi.json';
 
 const contractAddress = '0x7010D85A7E84Af63bcCb10D1f0067f6255C03936'
 
@@ -23,9 +23,13 @@ export const getSignerContract = () => {
  * 创建动物，开蛋
  */
 export const create = async () => {
+
   const contract = getSignerContract()
-  const tx = await contract.create({ value: toWei('0.01') })
-  await tx.wait()
+  const tx = await contract.create({ value: toWei('0.01') });
+  return {
+    contract,
+    tx
+  };
 }
 
 /**
