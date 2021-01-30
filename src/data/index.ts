@@ -18,22 +18,22 @@ export type zooType = keyof typeof zoo;
 export const LevelListData = [
   {
     title: '一级',
-    id: '1',
+    id: 1,
   },
   {
     title: '二级',
-    id: '2',
+    id: 2,
   },
   {
     title: '三级',
-    id: '3',
+    id: 3,
   },
   {
     title: '四级',
-    id: '4',
+    id: 4,
   },
   {
     title: '五级',
-    id: '5',
+    id: 5,
   },
 ]

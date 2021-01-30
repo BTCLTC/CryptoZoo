@@ -1,8 +1,11 @@
 import React, { useEffect } from 'react';
+import { Empty, Spin, Modal, message } from 'antd';
+import { BigNumber } from 'ethers'
 import AnimalCard from '@/components/animal-card';
+import Loading from '@/components/loading';
 import { LevelListData } from '@/data'
 import useUser from '@/hooks/user';
-import { getBalanceOf, getTokenOfOwnerByIndex, getAnimalInfo } from '@/service/nft'
+import { getBalanceOf, getTokenOfOwnerByIndex, getAnimalInfo, getUserInfo, upgrade } from '@/service/nft'
 
 import styles from './styles.less';
 
@@ -36,34 +39,86 @@ const mockData = [{
   }
 }]
 
+interface Data {
+  id: number;
+  data: object;
+}
+
 export default () => {
-  const [level, setLevel] = React.useState('all');
+  const [isFirst, setIsFirst] = React.useState(true);
+  const [loading, setLoading] = React.useState(true);
+  const [level, setLevel] = React.useState(1);
+  const [page, setPage] = React.useState(0);
+  const [data, setData] = React.useState<Data[]>([]);
   const { address } = useUser();
 
-  const onLevelItemClick = React.useCallback((id: string) => {
+  const onLevelItemClick = React.useCallback((id: number) => {
     setLevel(id);
-  }, [level]);
+    getLevelData(address, id, page);
+  }, [address, level, page]);
 
-  const init = async () => {
+  const getLevelData = async (address: string, level: number, page: number = 0, update: boolean = true) => {
+    try {
+      setLoading(true);
+      const [data, noNext] = await getUserInfo(address, level, page);
+      setLoading(false);
+      setIsFirst(false);
+
+      if (!noNext) {
+        setPage(page + 1);
+      }
+
+      const formData = data.map((item: any[]) => {
+        const [tokenId, animalLevel, animalType, price] = item;
+        return {
+          id: animalType,
+          data: {
+            level: animalLevel,
+            tokenId: tokenId.toString(),
+            price: price.toString(),
+          }
+        }
+      });
+
+      if (update) {
+        setData(formData);
+      }
+
+      return formData;
+    } catch (err) {
+      message.error('人气大爆发');
+      setLoading(false);
+    }
+
+    return [];
+  }
+
+  const init = () => {
     // 根据用户的钱包地址，获取其所有生肖
     if (address) {
-      // 获取生肖索引
-      const index = await getBalanceOf(address)
-      console.log(index)
-      // 根据索引，循环获取生肖的tokenID
-      for (let i = 0; i < index; i++) {
-        const tokenID = await getTokenOfOwnerByIndex(address, i)
-        // 根据生肖的tokenID，获取生肖信息
-        const data = await getAnimalInfo(tokenID)
-        console.log(data)
-      }
+      getLevelData(address, level, page);
     }
+
+  }
+
+  const onUpgrade = async (animalType, level, tokenId) => {
+    const list = data.filter(item => item.id === animalType && item.data.level === level);
+
+    if (list.length < 2) {
+      return Modal.error({
+        title: '错误',
+        content: '升级最低需要2个同等级的动物'
+      });
+    }
+
+    setLoading(true);
+    await upgrade(...list.map(item => item.data.tokenId));
+    setLoading(false);
   }
 
   useEffect(() => {
-    init()
+    init();
   }, [address]);
-
 
   return (
     <div>
@@ -75,15 +130,20 @@ export default () => {
           }
         </div>
       </div>
-
-      <div className={styles['list-container']}>
+      {loading && <Loading />}
+      {!isFirst && <div className={styles['list-container']}>
         {
-          mockData.map(item => {
-            return <AnimalCard className={styles.item} from="profile" id={item.id} key={item.id} data={item.data}></AnimalCard>
+          data.length === 0 && <div className={styles['empty']}>
+            <Empty description="没有动物，试着去商城购买吧" />
+          </div>
+        }
+        {
+          data.map((item, idx) => {
+            return <AnimalCard className={styles.item} from="profile" id={item.id} key={item.data.tokenId || idx} data={item.data} onUpgrade={onUpgrade}></AnimalCard>
           })
         }
+      </div>}
 
-      </div>
     </div>
   );
 }
