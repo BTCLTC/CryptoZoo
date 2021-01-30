@@ -35,7 +35,7 @@ export const upgrade = async (token1: string, token2: string) => {
   const contract = getSignerContract()
 
   // Return: bool （升级是否成功）
-  const status = await contract.upgrade(token1, token2)
+  return contract.upgrade(token1, token2)
 }
 
 /**
@@ -44,7 +44,7 @@ export const upgrade = async (token1: string, token2: string) => {
 export const redeem = async (token: string) => {
   const contract = getSignerContract()
 
-  const status = await contract.redeem(token)
+  return contract.redeem(token)
 }
 
 /**
@@ -138,4 +138,13 @@ export const getIsOnPurchased = async (level: number) => {
   const contract = getContract()
 
   return await contract.onPurchase(level)
+}
+
+/**
+ * 查询用户信息
+ */
+export const getUserInfo = async (address: string, level: number, index: number = 0) => {
+  const contract = getContract();
+
+  return contract.getUserInfo(address, level, index);
 }
