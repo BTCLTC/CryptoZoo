@@ -51,9 +51,9 @@ export const redeem = async (token: string) => {
  * 竞拍出售
  */
 export const sellBids = async (token: string, price: string) => {
-  const contract = getSignerContract()
+  const contract = getSignerContract();
 
-  return await contract.sellBids(token, BigNumber.from(price))
+  return await contract.sellBids(token, toWei(price), { value: toWei(price) });
 }
 
 /**
@@ -63,10 +63,8 @@ export const sellBids = async (token: string, price: string) => {
  * @param price: 价格
  */
 export const buyBids = async (level: number, type: number, price: string) => {
-  console.log(price)
-  const contract = getSignerContract()
-
-  return await contract.buyBids(level, type, BigNumber.from(price))
+  const contract = getSignerContract();
+  return await contract.buyBids(level, type, toWei(price), { value: toWei(price) }).catch((err: any) => err);
 }
 
 /**

@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Modal } from 'antd';
+import { Modal, notification } from 'antd';
 
 import NumericInput from '@/components/numerical-input';
 import { buyBids, sellBids, upgrade } from '@/service/nft';
@@ -29,34 +29,43 @@ interface Props {
 
 export default function AnimalCard(props: Props) {
 
-  const [price, setPrice] = useState('');
-
   const { id, from, data, className } = props;
   const cls = getAnimalBg(id);
 
-  // 购买
-  const onBuyHandler = useCallback((isTrade: boolean, level: number) => {
-    // if (isTrade) {
-
-    // }
-    Modal.confirm({
-      title: '盲拍 - 购买',
-      // icon: <ExclamationCircleOutlined />,
-      content: <NumericInput onChange={priceChange} />,
-      okText: '确认',
-      cancelText: '取消',
-      onOk: async (e) => {
-        console.log(price)
-        const status = await buyBids(level, id, price)
-        console.log(status);
-        console.log(e)
-      }
-    });
-  }, [price]);
+  let price = '';
 
   const priceChange = (value: string) => {
-    setPrice(value)
-  }
+    price = value;
+  };
+
+  // 购买
+  const onBuyHandler = useCallback((isTrade: boolean, level: number) => {
+    if (isTrade) {
+      Modal.confirm({
+        title: '盲拍 - 购买',
+        content: <NumericInput onChange={(value: string) => priceChange(value)} />,
+        okText: '确认',
+        cancelText: '取消',
+        onOk: async (e) => {
+          if (price) {
+            const tx = await buyBids(level, id, price);
+            if (tx.wait) {
+              await tx.wait();
+              notification.success({
+                message: '温馨提示',
+                description: '交易成功'
+              });
+            } else {
+              notification.error({
+                message: '温馨提示',
+                description: '交易失败'
+              });
+            }
+          }
+        }
+      });
+    }
+  }, [price]);
 
   const onRebuyHandler = () => {
 
@@ -97,7 +106,7 @@ export default function AnimalCard(props: Props) {
       {status === '买入' && <><span className={styles.split} /><span className={styles.btn} onClick={onSellHandler}>出售</span></>}
       {status === '售卖中' && <><span className={styles.split} /><span className={styles.btn}>出售中</span></>}
     </div>
-  }, [id, from, data]);
+  }, [id, from, data, price]);
 
   return <div className={`${cls} ${className}`}>
     {from === 'profile' && <span className={styles.tags}>赠送</span>}
