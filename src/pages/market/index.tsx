@@ -62,6 +62,7 @@ export default () => {
   const [data, setData] = useState(_zoo);
   const [marketData, setMarketData] = useState(_marketData);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [price, setPrice] = useState('');
 
 
 
@@ -133,7 +134,8 @@ export default () => {
   }, [isModalVisible])
 
   const handleCancel = useCallback(() => {
-    setIsModalVisible(false)
+    setPrice('');
+    setIsModalVisible(false);
   }, [isModalVisible])
 
   // 点击购买或者出售
@@ -141,6 +143,11 @@ export default () => {
     console.warn(_type);
     setIsModalVisible(true);
   }
+
+  const inputChange = useCallback((e: HTMLInputElement) => {
+    // @ts-ignore
+    setPrice(e.target.value);
+  }, [price]);
 
   return (
     <div>
@@ -174,7 +181,7 @@ export default () => {
         cancelText="取消"
         onOk={handleOk}
         onCancel={handleCancel}>
-        <Input placeholder="请输入盲拍价格" suffix="ETH" />
+        <Input placeholder="请输入盲拍价格" suffix="ETH" onChange={(e) => inputChange(e)}/>
       </Modal>
     </div>
   );
