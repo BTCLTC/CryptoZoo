@@ -20,6 +20,7 @@ interface Props {
     type: 'buy' | 'sell';
     isTrade: boolean;
     level: number;
+    tokenID: string;
     // 状态，售卖中，已卖，未卖
     status: string;
     count: number;
@@ -33,8 +34,8 @@ export default function AnimalCard(props: Props) {
   const { id, from, data, className } = props;
   const cls = getAnimalBg(id);
 
-  // 市场的购买/出售
-  const onMarketHandler = useCallback((isTrade: boolean, level: number) => {
+  // 购买
+  const onBuyHandler = useCallback((isTrade: boolean, level: number) => {
     // if (isTrade) {
 
     // }
@@ -82,15 +83,15 @@ export default function AnimalCard(props: Props) {
   const renderFooter = React.useCallback(() => {
     if (from === 'market') {
       const { isTrade, level } = data;
-      return <div className={isTrade ? `${styles['btn-trade']} ${styles['trade']}` : styles['btn-trade']} onClick={() => onMarketHandler(isTrade, level)}>
+      return <div className={isTrade ? `${styles['btn-trade']} ${styles['trade']}` : styles['btn-trade']} onClick={() => onBuyHandler(isTrade, level)}>
         <span>购买</span>
       </div>
     }
 
-    const { status } = data;
+    const { status, tokenID } = data;
     return <div className={styles['profile-btn-group']}>
       <span className={styles.btn} onClick={onUpgradeHandler}>升级</span>
-      <><span className={styles.split} /><span className={styles.btn} onClick={onSellHandler}>出售</span></>
+      <span className={styles.split} /><span className={styles.btn} onClick={() => onSellHandler(tokenID)}>出售</span>
 
       {status === '卖出' && <><span className={styles.split} /><span className={styles.btn} onClick={onRebuyHandler}>回购</span></>}
       {status === '买入' && <><span className={styles.split} /><span className={styles.btn} onClick={onSellHandler}>出售</span></>}
