@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { Spin, Modal, Input } from 'antd';
 import AnimalCard from '@/components/animal-card';
 import useUser from '@/hooks/user';
@@ -27,18 +27,6 @@ export const LevelListData = [
 ];
 
 export default () => {
-  // 初始化生肖数据
-  const _zoo = Object.keys(zoo).map((key) => {
-    return {
-      id: key as unknown as number,
-      from: 'market',
-      data: {
-        type: 'buy' as 'buy' | 'sell',
-        isTrade: false
-      }
-    }
-  })
-
   // 市场数据
   const _marketData = {
     sell: {
@@ -59,7 +47,6 @@ export default () => {
   const [loading, setLoading] = useState(true);
   const [type, setType] = useState('buy' as 'buy' | 'sell');
   const [level, setLevel] = useState('2' as '2' | '3' | '4' | '5');
-  const [data, setData] = useState(_zoo);
   const [marketData, setMarketData] = useState(_marketData);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [price, setPrice] = useState('');
@@ -67,53 +54,45 @@ export default () => {
 
 
   useEffect(() => {
-    init()
+    init();
   }, [address]);
 
   const init = async () => {
-    const level2SellData = await getIsSale(2)
-    const level3SellData = await getIsSale(3)
-    const level4SellData = await getIsSale(4)
-    const level5SellData = await getIsSale(5)
-
-    const level2BuyData = await getIsOnPurchased(2)
-    const level3BuyData = await getIsOnPurchased(3)
-    const level4BuyData = await getIsOnPurchased(4)
-    const level5BuyData = await getIsOnPurchased(5)
+    setLoading(true);
+    const sellData = await Promise.all([2, 3, 4, 5].map((l) => getIsSale(l)));
+    const buyData = await Promise.all([2, 3, 4, 5].map((l) => getIsOnPurchased(l)));
 
     const obj = {
       sell: {
-        2: level2SellData,
-        3: level3SellData,
-        4: level4SellData,
-        5: level5SellData
+        2: sellData[0],
+        3: sellData[1],
+        4: sellData[2],
+        5: sellData[3]
       },
       buy: {
-        2: level2BuyData,
-        3: level3BuyData,
-        4: level4BuyData,
-        5: level5BuyData
+        2: buyData[0],
+        3: buyData[1],
+        4: buyData[2],
+        5: buyData[3]
       }
     }
     setMarketData(obj);
-    handleData(level2SellData);
+    setLoading(false);
   }
 
   // 点击购买/出售
   const onTypeClick = useCallback((_type: 'buy' | 'sell') => {
     setType(_type);
-    handleData(marketData[_type][level]);
-  }, [loading, type, data, marketData]);
+  }, [type]);
 
   // 点击等级
   const onLevelItemClick = useCallback((id: '2' | '3' | '4' | '5') => {
     setLevel(id);
-    handleData(marketData[type][id]);
-  }, [loading, type, level, data, marketData]);
+  }, [type, level]);
 
-  const handleData = (Data: any) => {
-    setLoading(true);
-    const zooData = Data.map((status: boolean, index: number) => {
+  const handleData = () => {
+    const _data = marketData[type][level];
+    const zooData = _data.map((status: boolean, index: number) => {
       return {
         id: index + 1,
         from: 'market',
@@ -123,10 +102,8 @@ export default () => {
         }
       }
     });
-    setData(zooData);
-    setTimeout(() => {
-      setLoading(false);
-    }, 500);
+
+    return zooData;
   }
 
   const handleOk = useCallback(() => {
@@ -149,6 +126,8 @@ export default () => {
     setPrice(e.target.value);
   }, [price]);
 
+  const dataSource = useMemo(handleData, [type, level, marketData]);
+
   return (
     <div>
       <div className={styles['type-container']}>
@@ -166,12 +145,12 @@ export default () => {
 
       <Spin spinning={loading}>
         <div className={styles['list-container']}>
-        {
-          data.map(item => {
-            return <AnimalCard clickCallback={(_type: 'buy' | 'sell') => handlecClickCallback(_type)} className={styles.item} from="market" id={item.id} key={item.id} data={item.data}></AnimalCard>
-          })
-        }
-      </div>
+          {
+            dataSource.map(item => {
+              return <AnimalCard clickCallback={(_type: 'buy' | 'sell') => handlecClickCallback(_type)} className={styles.item} from="market" id={item.id} key={item.id} data={item.data}></AnimalCard>
+            })
+          }
+        </div>
       </Spin>
 
       <Modal
