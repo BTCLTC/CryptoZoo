@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { Modal, notification } from 'antd';
 
 import NumericInput from '@/components/numerical-input';
@@ -39,7 +39,7 @@ export default function AnimalCard(props: Props) {
   };
 
   // 购买
-  const onBuyHandler = useCallback((isTrade: boolean, level: number) => {
+  const onBuyHandler = (isTrade: boolean, level: number) => {
     if (isTrade) {
       Modal.confirm({
         title: '盲拍 - 购买',
@@ -65,7 +65,7 @@ export default function AnimalCard(props: Props) {
         }
       });
     }
-  }, [price]);
+  };
 
   const onRebuyHandler = () => {
 
