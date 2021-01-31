@@ -1,0 +1,66 @@
+# lmc api
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: crypto-zoo
+  name: crypto-zoo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crypto-zoo
+  template:
+    metadata:
+      labels:
+        app: crypto-zoo
+    spec:
+      containers:
+        - image: crypto-zoo:latest
+          imagePullPolicy: Never
+          name: crypto-zoo
+          ports:
+            - containerPort: 80
+      imagePullSecrets:
+        - name: regsecret
+      restartPolicy: Always
+
+# service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: crypto-zoo
+spec:
+  ports:
+    - name: crypto-zoo
+      protocol: TCP
+      port: 80
+      targetPort: 80
+  selector:
+    app: crypto-zoo
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: crypto-zoo
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    kubernetes.io/tls-acme: "true"
+spec:
+  tls:
+    - hosts:
+        - cryptozoo.mete.work
+      secretName: crypto-zoo-tls
+  rules:
+    - host: cryptozoo.mete.work
+      http:
+        paths:
+          - backend:
+              serviceName: crypto-zoo
+              servicePort: 80

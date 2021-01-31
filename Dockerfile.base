@@ -1,0 +1,7 @@
+FROM node:10-alpine
+
+WORKDIR /opt/node_app
+
+COPY package.json yarn.lock ./
+
+RUN yarn --ignore-optional && yarn cache clean
