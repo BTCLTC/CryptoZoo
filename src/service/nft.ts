@@ -35,8 +35,12 @@ export const create = async () => {
 /**
  * 升级
  */
-export const upgrade = async (token1: string, token2: string) => {
+export const upgrade = async ({ token1, token2 }: { token1: string, token2: string }, event?: string, callback?: (...args: any[]) => void) => {
   const contract = getSignerContract()
+
+  if (event && callback) {
+    contract.on(event, callback);
+  }
 
   // Return: bool （升级是否成功）
   return contract.upgrade(token1, token2)
@@ -45,8 +49,12 @@ export const upgrade = async (token1: string, token2: string) => {
 /**
  * 系统赎回
  */
-export const redeem = async (token: string) => {
-  const contract = getSignerContract()
+export const redeem = async (token: string, event?: string, callback?: (args: any) => void) => {
+  const contract = getSignerContract();
+
+  if (event && callback) {
+    contract.on(event, callback);
+  }
 
   return contract.redeem(token)
 }
@@ -54,10 +62,14 @@ export const redeem = async (token: string) => {
 /**
  * 竞拍出售
  */
-export const sellBids = async (token: string, price: string) => {
+export const sellBids = async ({ token, price }: { token: string, price: string }, event?: string, callback?: (...args: any[]) => void) => {
   const contract = getSignerContract();
 
-  return await contract.sellBids(token, toWei(price), { value: toWei(price) });
+  if (event && callback) {
+    contract.on(event, callback);
+  }
+
+  return contract.sellBids(token, toWei(price));
 }
 
 /**
@@ -68,7 +80,7 @@ export const sellBids = async (token: string, price: string) => {
  */
 export const buyBids = async (level: number, type: number, price: string) => {
   const contract = getSignerContract();
-  return await contract.buyBids(level, type, toWei(price), { value: toWei(price) }).catch((err: any) => err);
+  return contract.buyBids(level, type, toWei(price));
 }
 
 /**

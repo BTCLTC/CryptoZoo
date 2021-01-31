@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
-import { Empty, Spin, Modal, message } from 'antd';
-import { BigNumber } from 'ethers'
+import { Empty, Spin, Modal, message, notification } from 'antd';
 import AnimalCard from '@/components/animal-card';
 import Loading from '@/components/loading';
 import { LevelListData } from '@/data'
@@ -8,37 +7,6 @@ import useUser from '@/hooks/user';
 import { getBalanceOf, getTokenOfOwnerByIndex, getAnimalInfo, getUserInfo, upgrade } from '@/service/nft'
 
 import styles from './styles.less';
-
-
-const mockData = [{
-  id: 1,
-  data: {
-    status: '卖出',
-    count: 1,
-  }
-},
-{
-  id: 2,
-  data: {
-    status: '卖出',
-    count: 1,
-  }
-},
-{
-  id: 3,
-  data: {
-    status: '卖出',
-    count: 1,
-  }
-},
-{
-  id: 4,
-  data: {
-    status: '卖出',
-    count: 1,
-  }
-}]
-
 interface Data {
   id: number;
   data: object;
@@ -47,6 +15,7 @@ interface Data {
 export default () => {
   const [isFirst, setIsFirst] = React.useState(true);
   const [loading, setLoading] = React.useState(true);
+  const [content, setContent,] = React.useState('正在处理中...');
   const [level, setLevel] = React.useState(1);
   const [page, setPage] = React.useState(0);
   const [data, setData] = React.useState<Data[]>([]);
@@ -102,17 +71,42 @@ export default () => {
   }
 
   const onUpgrade = async (animalType, level, tokenId) => {
-    const list = data.filter(item => item.id === animalType && item.data.level === level);
+    try {
+      const list = data.filter(item => item.id === animalType && item.data.level === level);
 
-    if (list.length < 2) {
-      return Modal.error({
-        title: '错误',
-        content: '升级最低需要2个同等级的动物'
-      });
+      if (list.length < 2) {
+        return Modal.error({
+          title: '错误',
+          content: '升级最低需要2个同等级的动物'
+        });
+      }
+
+      setLoading(true);
+      setContent('正在提交...');
+
+      const [token1, token2] = list.map(item => item.data.tokenId);
+      const tx = await upgrade({ token1, token2 });
+
+      if (tx.wait) {
+        notification.success({
+          message: '温馨提示',
+          description: '提交成功，升级成功后将会通知'
+        });
+
+        setContent('正在升级...');
+
+        await tx.wait();
+
+        notification.success({
+          message: '温馨提示',
+          description: '升级成功'
+        });
+
+        setTimeout(() => window.location.reload(), 1000);
+      }
+    } catch (err) {
+      message.error('人气大爆发');
     }
-
-    setLoading(true);
-    await upgrade(...list.map(item => item.data.tokenId));
     setLoading(false);
   }
 
@@ -130,7 +124,7 @@ export default () => {
           }
         </div>
       </div>
-      {loading && <Loading />}
+      {loading && <Loading content={content} />}
       {!isFirst && <div className={styles['list-container']}>
         {
           data.length === 0 && <div className={styles['empty']}>

@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import { Modal, notification } from 'antd';
-
 import NumericInput from '@/components/numerical-input';
 import Loading from '@/components/loading';
+import useUser from '@/hooks/user';
 import { buyBids, sellBids, redeem } from '@/service/nft';
 import styles from './styles.less';
 
@@ -33,6 +33,8 @@ interface Props {
 
 export default function AnimalCard(props: Props) {
   const [loading, setLoading] = useState(false);
+  const [content, setContent,] = useState('正在处理中...');
+  const { address, } = useUser();
 
   const { id, from, data, className } = props;
   const cls = getAnimalBg(id);
@@ -75,14 +77,19 @@ export default function AnimalCard(props: Props) {
   const onRebuyHandler = async (tokenId: string) => {
     try {
       setLoading(true);
-      const status = await redeem(tokenId);
-      setLoading(false);
+      setContent('正在提交...');
 
-      if (status) {
+      const tx = await redeem(tokenId);
+      setContent('正在进行交易...');
+
+      if (tx.wait) {
+        await tx.wait();
         notification.success({
           message: '温馨提示',
           description: '交易成功'
         });
+
+        setTimeout(() => window.location.reload(), 1000);
       } else {
         notification.error({
           message: '温馨提示',
@@ -90,12 +97,12 @@ export default function AnimalCard(props: Props) {
         });
       }
     } catch (err) {
-      setLoading(false);
       notification.error({
         message: '温馨提示',
         description: '交易失败'
       });
     }
+    setLoading(false);
   }
 
   const onSellHandler = (token: string) => {
@@ -106,17 +113,26 @@ export default function AnimalCard(props: Props) {
       cancelText: '取消',
       onOk: async (e) => {
         if (price) {
-          const tx = await sellBids(token, price);
+          const tx = await sellBids({ token, price });
+
           if (tx.wait) {
-            await tx.wait();
             notification.success({
               message: '温馨提示',
-              description: '交易成功'
+              description: '提交成功，正在执行挂单，请等待'
             });
+
+            await tx.wait();
+
+            notification.success({
+              message: '温馨提示',
+              description: '挂单成功'
+            });
+
+            setTimeout(() => window.location.reload(), 1000);
           } else {
             notification.error({
               message: '温馨提示',
-              description: '交易失败'
+              description: '提交失败'
             });
           }
         }
@@ -124,9 +140,9 @@ export default function AnimalCard(props: Props) {
     });
   }
 
-  const onUpgradeHandler = (level, tokenId) => {
+  const onUpgradeHandler = (animalType, level, tokenId) => {
     if (props.onUpgrade) {
-      props.onUpgrade(level, tokenId);
+      props.onUpgrade(animalType, level, tokenId);
     }
   }
 
@@ -143,15 +159,14 @@ export default function AnimalCard(props: Props) {
     return <div className={styles['profile-btn-group']}>
       <span className={level < 5 ? styles.btn : `${styles.btn} ${styles['btn-disabled']}`} onClick={level < 5 ? () => onUpgradeHandler(id, level, tokenId) : () => { }}>升级</span>
       {level >= 3 && <><span className={styles.split} /><span className={styles.btn} onClick={() => onRebuyHandler(tokenId)}>回购</span></>}
-      {level > 1 && <><span className={styles.split} /><span className={styles.btn} onClick={onSellHandler}>出售</span></>}
+      {level > 1 && price === '0' && <><span className={styles.split} /><span className={styles.btn} onClick={() => onSellHandler(tokenId)}>出售</span></>}
       {price !== '0' && <><span className={styles.split} /><span className={styles.btn}>出售中</span></>}
     </div>
   }, [id, from, data, price]);
 
   return <div className={`${cls} ${className}`}>
-    {loading && <Loading />}
+    {loading && <Loading content={content} />}
     {from === 'profile' && <span className={styles.tags}>赠送</span>}
-    {from === 'profile' && <span className={styles.count}>{data.count}</span>}
     {renderFooter()}
   </div>
 }
