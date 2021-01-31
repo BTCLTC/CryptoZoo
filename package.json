@@ -10,7 +10,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
-  "homepage": "https://yunweb.github.io/crypto-zoo",
+  "homepage": "./",
   "gitHooks": {
     "pre-commit": "lint-staged"
   },

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { Spin } from 'antd';
+import Loading from '@/components/loading';
 import AnimalCard from '@/components/animal-card';
 import useUser from '@/hooks/user';
 import { getIsSale, getIsOnPurchased } from '@/service/nft'
@@ -54,8 +54,8 @@ export default () => {
 
   const init = async () => {
     setLoading(true);
-    const sellData = await Promise.all([2, 3, 4, 5].map((l) => getIsSale(l)));
-    const buyData = await Promise.all([2, 3, 4, 5].map((l) => getIsOnPurchased(l)));
+    const sellData = await Promise.all([2, 3, 4, 5].map((l) => getIsOnPurchased(l)));
+    const buyData = await Promise.all([2, 3, 4, 5].map((l) => getIsSale(l)));
 
     const obj = {
       sell: {
@@ -107,7 +107,7 @@ export default () => {
   return (
     <div>
       <div className={styles['type-container']}>
-        <span className={`${styles['type-buy']}  ${styles['type-active']}`} onClick={() => onTypeClick('buy')}>购买</span>
+        <span className={`${styles['type-buy']}  ${styles['type-active']}`}>购买</span>
       </div>
       <div className={styles['level-container']}>
         <span className={styles.level} >所属级别</span>
@@ -118,7 +118,7 @@ export default () => {
         </div>
       </div>
 
-      <Spin spinning={loading}>
+        {loading && <Loading content="加载中..." />}
         <div className={styles['list-container']}>
           {
             dataSource.map(item => {
@@ -126,7 +126,6 @@ export default () => {
             })
           }
         </div>
-      </Spin>
     </div>
   );
 }
