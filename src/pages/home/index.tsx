@@ -49,11 +49,10 @@ export default () => {
         await data.tx.wait();
       } else {
         setLoading(false);
-        // notification.error({
-        //   message: '温馨提示',
-        //   description: '砸蛋失败'
-        // });
-        alert('砸蛋失败，可能金额不足0.01ETH');
+        notification.error({
+          message: '温馨提示',
+          description: '砸蛋失败，可能余额不足0.01 ETH'
+        });
       }
     } else {
       const addr = await getAccount()

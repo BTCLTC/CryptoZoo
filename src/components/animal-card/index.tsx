@@ -55,8 +55,8 @@ export default function AnimalCard(props: Props) {
         cancelText: '取消',
         onOk: async (e) => {
           if (price) {
-            const tx = await buyBids(level, id, price);
-            if (tx.wait) {
+            const tx = await buyBids(level, id, price).catch(() => {});
+            if (tx && tx.wait) {
               await tx.wait();
               notification.success({
                 message: '温馨提示',
