@@ -1,4 +1,4 @@
-FROM crypto-zoo as base
+FROM crypto-zoo-base as base
 
 WORKDIR /opt/node_app
 
