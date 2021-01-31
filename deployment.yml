@@ -55,10 +55,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - cryptozoo.mete.work
+        - zoo.mete.work
       secretName: crypto-zoo-tls
   rules:
-    - host: cryptozoo.mete.work
+    - host: zoo.mete.work
       http:
         paths:
           - backend:
