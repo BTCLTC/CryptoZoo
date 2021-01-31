@@ -107,7 +107,7 @@ export const cancleBuy = async (level: number, type: number) => {
 export const transfer = async (fromAddress: string, toAddress: string, tokenId: string) => {
   const contract = getSignerContract()
 
-  const data = await contract.transferFrom(fromAddress, toAddress, tokenId)
+  return await contract.transferFrom(fromAddress, toAddress, tokenId)
 }
 
 /**

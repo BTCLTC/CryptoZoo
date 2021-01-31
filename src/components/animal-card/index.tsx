@@ -1,9 +1,11 @@
 import React, { useState, useCallback } from 'react';
-import { Modal, notification } from 'antd';
+import { Modal, notification, Input } from 'antd';
+import { isAddress } from 'web3-utils';
+import { UserOutlined } from '@ant-design/icons';
 import NumericInput from '@/components/numerical-input';
 import Loading from '@/components/loading';
 import useUser from '@/hooks/user';
-import { buyBids, sellBids, redeem } from '@/service/nft';
+import { buyBids, sellBids, redeem, transfer } from '@/service/nft';
 import styles from './styles.less';
 
 
@@ -40,10 +42,16 @@ export default function AnimalCard(props: Props) {
   const cls = getAnimalBg(id);
 
   let price = '';
+  let toAddress = '';
 
   const priceChange = (value: string) => {
     price = value;
   };
+
+  const addressChange = (e: any) => {
+    const value = e.target.value;
+    toAddress = value;
+  }
 
   // 购买
   const onBuyHandler = (isTrade: boolean, level: number) => {
@@ -141,10 +149,47 @@ export default function AnimalCard(props: Props) {
     });
   }
 
-  const onUpgradeHandler = (animalType, level, tokenId) => {
+  const onUpgradeHandler = (animalType: number, level: number, tokenId: string) => {
     if (props.onUpgrade) {
       props.onUpgrade(animalType, level, tokenId);
     }
+  }
+
+  const giveHandler = (tokenId: string) => {
+    Modal.confirm({
+      title: '赠送',
+      content: <Input placeholder="请输入接收地址" onChange={addressChange} prefix={<UserOutlined />} />,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async (e) => {
+        if (toAddress) {
+          if (isAddress(toAddress)) {
+            const tx = await transfer(address, toAddress, tokenId).catch(() => {});
+            if (tx && tx.wait) {
+              await tx.wait();
+
+              notification.success({
+                message: '温馨提示',
+                description: '赠送成功'
+              });
+
+              setTimeout(() => window.location.reload(), 1000);
+            } else {
+              notification.error({
+                message: '温馨提示',
+                description: '赠送失败'
+              });
+            }
+          } else {
+            notification.error({
+              message: '温馨提示',
+              description: '地址格式不正确'
+            });
+            return Promise.reject();
+          }
+        }
+      }
+    });
   }
 
   const renderFooter = React.useCallback(() => {
@@ -167,7 +212,7 @@ export default function AnimalCard(props: Props) {
 
   return <div className={`${cls} ${className}`}>
     {loading && <Loading content={content} />}
-    {from === 'profile' && <span className={styles.tags}>赠送</span>}
+    {from === 'profile' && <span className={styles.tags} onClick={() => giveHandler(data.tokenId)}>赠送</span>}
     {renderFooter()}
   </div>
 }
