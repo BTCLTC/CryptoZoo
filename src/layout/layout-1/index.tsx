@@ -2,7 +2,6 @@ import React from 'react';
 
 import Nav from '@/components/navlink';
 import UnlockButton from '@/components/unlock-button';
-import Event from '@/components/event';
 
 import styles from './styles.less';
 
@@ -14,7 +13,6 @@ interface Props {
 
 export default ({ children, }: Props) => {
   return <div className={styles.container}>
-    <Event />
     <header>
       <img src={logo} />
       <div>
