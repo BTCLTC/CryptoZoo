@@ -71,10 +71,8 @@ export const getBalance = async (address: string): Promise<string> => {
 export const checkWallet = async (): Promise<void> => {
   const unlocked = await isUnlocked()
   if (unlocked) {
-    alert('钱包没有创建账户')
     // 钱包没有创建账户
   } else {
-    alert('钱包被锁定')
     // 钱包被锁定提示
   }
 }
@@ -87,7 +85,6 @@ export const walletListener = (): void => {
     // 授权地址改变
     if (accounts && Array.isArray(accounts)) {
       if (accounts.length) {
-        alert('地址变更')
         getBalance(accounts[0])
         return accounts[0]
       } else {

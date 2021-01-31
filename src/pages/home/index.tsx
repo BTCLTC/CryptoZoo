@@ -1,16 +1,18 @@
 import React, { useState, useCallback } from 'react';
 import { NavLink } from 'umi';
-import { Modal } from 'antd';
+import { Modal, notification } from 'antd';
 import Loading from '@/components/loading';
 import useUser from '@/hooks/user';
 import UnlockButton from '@/components/unlock-button';
 import { zoo, zooType } from '@/data';
-import { getAnimalBg } from '@/components/animal-card'
+import { getAnimalBg } from '@/components/animal-card';
 
 import logo from '../../assets/images/logo.png';
 import homeBtn from '../../assets/images/home-btn.png';
 import marketBtn from '../../assets/images/market-btn.png';
 import profileBtn from '../../assets/images/profile-btn.png';
+import buyBtn from '../../assets/images/buy_btn.png';
+import unlockBtn from '../../assets/images/unlock_btn.png';
 
 import styles from './styles.less';
 
@@ -47,6 +49,11 @@ export default () => {
         await data.tx.wait();
       } else {
         setLoading(false);
+        // notification.error({
+        //   message: '温馨提示',
+        //   description: '砸蛋失败'
+        // });
+        alert('砸蛋失败，可能金额不足0.01ETH');
       }
     } else {
       const addr = await getAccount()
@@ -79,16 +86,24 @@ export default () => {
         </NavLink>
       </div>
 
-      {!isModalVisible && <div className={ styles['egg-container']}>
+      <div className={ isModalVisible ? `${styles['egg-container']} ${styles['hide']}` : styles['egg-container']}>
         <div onClick={onClick} className={styles.egg}></div>
-      </div>}
+      </div>
+
+      <div className={styles['home-btn']}>
+        {address ? <div>
+          <img src={buyBtn} onClick={onClick} alt="buy"/>
+        </div> : <div>
+          <img src={unlockBtn} onClick={onClick} alt="unlock"/>
+        </div>}
+      </div>
 
       {loading && <Loading content="砸蛋中..." />}
       <Modal className={styles.modal} onCancel={modalClose} footer={null} visible={isModalVisible}>
         <div className={styles['center']}>
           {isShow ? <div className={styles['egg-smash']}></div> :
             <div>
-              <div className={styles['title']}>恭喜您！获得了萌宠：{zoo[id]}</div>
+              <div className={styles['title']}>恭喜您！获得了一级萌宠：{zoo[id]}</div>
               <div className={getAnimalBg(id)}></div>
             </div>
           }

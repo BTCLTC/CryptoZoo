@@ -54,6 +54,11 @@
   display: flex;
   justify-content: center;
   cursor: url(../../assets/images/chuizi.png), auto;
+
+  &.hide {
+    visibility:hidden
+  }
+
   .egg {
     margin-top: 30px;
     width: 190px;
@@ -90,5 +95,15 @@
     .ant-modal-content {
       box-shadow: none;
     }
+  }
+}
+
+.home-btn {
+  margin-top: 60px;
+  text-align: center;
+
+  img {
+    height: 50px;
+    cursor: pointer;
   }
 }
