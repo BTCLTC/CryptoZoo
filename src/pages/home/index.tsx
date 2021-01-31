@@ -79,12 +79,12 @@ export default () => {
         </NavLink>
       </div>
 
-      <div className={ styles['egg-container']}>
+      {!isModalVisible && <div className={ styles['egg-container']}>
         <div onClick={onClick} className={styles.egg}></div>
-      </div>
+      </div>}
 
       {loading && <Loading content="砸蛋中..." />}
-      <Modal title="获得萌宠" onCancel={modalClose} footer={null} visible={isModalVisible}>
+      <Modal className={styles.modal} onCancel={modalClose} footer={null} visible={isModalVisible}>
         <div className={styles['center']}>
           {isShow ? <div className={styles['egg-smash']}></div> :
             <div>

@@ -77,6 +77,18 @@
   text-align: center;
 
   .title {
+    color: #fff;
     margin-bottom: 20px;
+  }
+}
+
+.modal {
+  :global {
+    .ant-modal-header, .ant-modal-content {
+      background: transparent;
+    }
+    .ant-modal-content {
+      box-shadow: none;
+    }
   }
 }
