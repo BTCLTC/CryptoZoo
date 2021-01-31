@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { isConnected, getAccount } from '@/service/metamask'
 import store from '@/common/store';
 
