@@ -62,6 +62,7 @@ export default function AnimalCard(props: Props) {
                 message: '温馨提示',
                 description: '交易成功'
               });
+              setTimeout(() => window.location.reload(), 1000);
             } else {
               notification.error({
                 message: '温馨提示',

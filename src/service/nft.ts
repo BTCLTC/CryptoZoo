@@ -80,7 +80,7 @@ export const sellBids = async ({ token, price }: { token: string, price: string 
  */
 export const buyBids = async (level: number, type: number, price: string) => {
   const contract = getSignerContract();
-  return contract.buyBids(level, type, toWei(price));
+  return contract.buyBids(level, type, toWei(price), { value: toWei(price) });
 }
 
 /**
