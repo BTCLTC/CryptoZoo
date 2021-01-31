@@ -56,7 +56,6 @@ export default () => {
       }
     } else {
       const addr = await getAccount();
-      debugger
       if (addr) {
         setAddress(addr)
       }
@@ -68,7 +67,6 @@ export default () => {
     setShow(false);
   };
 
-  console.log('home address', address);
   return (
     <div className={styles.container}>
       <div className={styles.bg}/>

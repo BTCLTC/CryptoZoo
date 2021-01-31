@@ -17,7 +17,6 @@ const simpleAdress = (address: string) => {
 
 export default function UnlockButton() {
   const { address, setAddress, } = useUser();
-  console.log('address', address)
   const onClick = React.useCallback(async () => {
     if(!address) {
       const addr = await getAccount();
