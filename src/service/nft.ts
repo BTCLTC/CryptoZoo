@@ -73,6 +73,17 @@ export const sellBids = async ({ token, price }: { token: string, price: string 
 }
 
 /**
+ * 主动购买
+ * @param level: 等级
+ * @param type: 生肖
+ * @param price: 价格
+ */
+export const buy = async (level: number, type: number, price: string) => {
+  const contract = getSignerContract();
+  return contract.buy(level, type, toWei(price), { value: toWei(price) });
+}
+
+/**
  * 竞拍购买
  * @param level: 等级
  * @param type: 生肖

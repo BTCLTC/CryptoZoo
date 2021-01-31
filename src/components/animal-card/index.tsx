@@ -5,7 +5,7 @@ import { UserOutlined } from '@ant-design/icons';
 import NumericInput from '@/components/numerical-input';
 import Loading from '@/components/loading';
 import useUser from '@/hooks/user';
-import { buyBids, sellBids, redeem, transfer } from '@/service/nft';
+import { buy, sellBids, redeem, transfer } from '@/service/nft';
 import styles from './styles.less';
 
 
@@ -57,13 +57,13 @@ export default function AnimalCard(props: Props) {
   const onBuyHandler = (isTrade: boolean, level: number) => {
     if (isTrade) {
       Modal.confirm({
-        title: '盲拍 - 购买',
+        title: '购买',
         content: <NumericInput onChange={(value: string) => priceChange(value)} />,
         okText: '确认',
         cancelText: '取消',
         onOk: async (e) => {
           if (price) {
-            const tx = await buyBids(level, id, price).catch(() => {});
+            const tx = await buy(level, id, price).catch(() => {});
             if (tx && tx.wait) {
               await tx.wait();
               notification.success({
