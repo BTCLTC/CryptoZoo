@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import { toWei } from 'web3-utils';
 import abi from '../abi/abi.json';
 
-const contractAddress = '0xe8206bd2120433FBa8878e3CA6137a18D43ad2c3'
+const contractAddress = '0xFe4223aD6118B67ac82d4bA8a2Aa75827D7D48E2'
 
 const getProvider = () => {
   return new ethers.providers.Web3Provider(window.ethereum)
