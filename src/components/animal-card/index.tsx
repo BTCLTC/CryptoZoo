@@ -164,7 +164,7 @@ export default function AnimalCard(props: Props) {
       onOk: async (e) => {
         if (toAddress) {
           if (isAddress(toAddress)) {
-            const tx = await transfer(address, toAddress, tokenId).catch(() => {});
+            const tx = await transfer(toAddress, tokenId).catch(() => {});
             if (tx && tx.wait) {
               await tx.wait();
 
