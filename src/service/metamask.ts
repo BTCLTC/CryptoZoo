@@ -44,9 +44,9 @@ export const getNetwork = async (): Promise<void> => {
   const chainId = await window.ethereum.request({
     method: 'eth_chainId'
   })
-  if (parseInt(chainId, 16) !== 4) {
-    alert('请选择 Rinkeby 网络')
-  }
+  // if (parseInt(chainId, 16) !== 97) {
+  //   alert('请选择 BSC 网络')
+  // }
 }
 
 /**
@@ -93,10 +93,10 @@ export const walletListener = (): void => {
       }
     }
   })
-  window.ethereum.on('chainChanged', (chainId: string) => {
-    if (parseInt(chainId, 16) !== 4) {
-      // 请选择 Rinkeby 网络
-      alert('请选择 Rinkeby 网络')
-    }
-  })
+  // window.ethereum.on('chainChanged', (chainId: string) => {
+  //   if (parseInt(chainId, 16) !== 97) {
+  //     // 请选择 Rinkeby 网络
+  //     alert('请选择 BSC 网络')
+  //   }
+  // })
 }
