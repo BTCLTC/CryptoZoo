@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import { toWei } from 'web3-utils';
 import abi from '../abi/abi.json';
 
-const contractAddress = '0xe8206bd2120433FBa8878e3CA6137a18D43ad2c3'
+const contractAddress = '0x3499A10bDd8B1A012063dCDe048e6Ce118Ab5481'
 
 const getProvider = () => {
   return new ethers.providers.Web3Provider(window.ethereum)
@@ -127,10 +127,10 @@ export const cancleBuy = async (level: number, type: number) => {
 /**
  * 转给其他人
  */
-export const transfer = async (fromAddress: string, toAddress: string, tokenId: string) => {
+export const transfer = async (toAddress: string, tokenId: string) => {
   const contract = getSignerContract()
 
-  return await contract.transferFrom(fromAddress, toAddress, tokenId)
+  return await contract.transferFrom(toAddress, tokenId)
 }
 
 /**

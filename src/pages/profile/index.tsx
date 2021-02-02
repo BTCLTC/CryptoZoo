@@ -55,6 +55,7 @@ export default () => {
 
       return formData;
     } catch (err) {
+      console.error(err)
       message.error('人气大爆发');
       setLoading(false);
     }
@@ -105,7 +106,7 @@ export default () => {
         setTimeout(() => window.location.reload(), 1000);
       }
     } catch (err) {
-      message.error('人气大爆发');
+      message.error(err.message || '人气大爆发');
     }
     setLoading(false);
   }
