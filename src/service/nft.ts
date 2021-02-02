@@ -33,8 +33,8 @@ export const getEggPrice = async () => {
  */
 export const create = async () => {
 
-  const price = await getEggPrice();
-  console.log(price);
+  // const price = await getEggPrice();
+  // console.log(price);
 
   const contract = getSignerContract()
   const tx = await contract.create({ value: toWei('0.01') });

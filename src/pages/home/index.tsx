@@ -30,7 +30,7 @@ export default () => {
   const onClick = useCallback(async () => {
     if (address) {
       setLoading(true);
-      const data = await create().catch(() => {});
+      const data = await create().catch((e) => {console.log(e)});
       if (data && data.tx.wait) {
         // 监听砸蛋成功事件
         data.contract.on('Creat', (_address, animal: zooType, tokenID, event) => {
