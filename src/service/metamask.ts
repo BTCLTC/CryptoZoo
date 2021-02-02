@@ -1,4 +1,22 @@
-import { fromWei, hexToNumberString } from 'web3-utils'
+import { fromWei, hexToNumberString } from 'web3-utils';
+import { isNetworkAvailable } from '@/config';
+
+let timer: NodeJS.Timeout | null = null;
+
+/**
+ * 点击连接钱包
+ */
+export const handleConnect = async (): Promise<string | void> => {
+  if (!window.ethereum || !window.ethereum.isMetaMask) {
+    // 没有安装metamask
+    alert('请先安装metamask!');
+  } else if (window.ethereum && await isUnlocked()) {
+    return await getAccount();
+  } else {
+    // 钱包被锁定提示
+    alert('请先metamask解锁钱包');
+  }
+}
 
 /**
  * 判断是否处理连接状态
@@ -43,10 +61,16 @@ export const getAccount = async (): Promise<string | void> => {
 export const getNetwork = async (): Promise<void> => {
   const chainId = await window.ethereum.request({
     method: 'eth_chainId'
-  })
-  // if (parseInt(chainId, 16) !== 97) {
-  //   alert('请选择 BSC 网络')
-  // }
+  });
+  const status = isNetworkAvailable(chainId);
+  if (!status) {
+    if (timer) {
+      clearTimeout(timer);
+    }
+    timer = setTimeout(() => {
+      alert('请使用metamask，选择 BSC-testnet/Rinkeby 网络');
+    }, 2000);
+  }
 }
 
 /**
@@ -72,8 +96,10 @@ export const checkWallet = async (): Promise<void> => {
   const unlocked = await isUnlocked()
   if (unlocked) {
     // 钱包没有创建账户
+    alert('钱包没有创建账户');
   } else {
     // 钱包被锁定提示
+    alert('钱包被锁定');
   }
 }
 
@@ -93,10 +119,16 @@ export const walletListener = (): void => {
       }
     }
   })
-  // window.ethereum.on('chainChanged', (chainId: string) => {
-  //   if (parseInt(chainId, 16) !== 97) {
-  //     // 请选择 Rinkeby 网络
-  //     alert('请选择 BSC 网络')
-  //   }
-  // })
+  window.ethereum.on('chainChanged', (chainId: string) => {
+    const status = isNetworkAvailable(chainId);
+    if (!status) {
+      // 请选择 Rinkeby 网络
+      if (timer) {
+        clearTimeout(timer);
+      }
+      timer = setTimeout(() => {
+        alert('请使用metamask，选择 BSC-testnet/Rinkeby 网络');
+      }, 2000);
+    }
+  })
 }

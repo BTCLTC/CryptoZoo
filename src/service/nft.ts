@@ -1,22 +1,22 @@
 import { ethers } from 'ethers';
 import { toWei } from 'web3-utils';
 import abi from '../abi/abi.json';
+import { getContractAddress } from '@/config';
 
-const contractAddress = '0x3499A10bDd8B1A012063dCDe048e6Ce118Ab5481'
 
 const getProvider = () => {
   return new ethers.providers.Web3Provider(window.ethereum)
 }
 
 export const getContract = () => {
-  return new ethers.Contract(contractAddress, abi, getProvider())
+  return new ethers.Contract(getContractAddress(), abi, getProvider())
 }
 
 /**
  * 需要签名的contract
  */
 export const getSignerContract = () => {
-  return new ethers.Contract(contractAddress, abi, getProvider().getSigner())
+  return new ethers.Contract(getContractAddress(), abi, getProvider().getSigner())
 }
 
 /**

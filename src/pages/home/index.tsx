@@ -16,7 +16,7 @@ import unlockBtn from '../../assets/images/unlock_btn.png';
 
 import styles from './styles.less';
 
-import { getAccount } from '@/service/metamask'
+import { handleConnect } from '@/service/metamask'
 import { create } from '../../service/nft'
 
 export default () => {
@@ -55,7 +55,7 @@ export default () => {
         });
       }
     } else {
-      const addr = await getAccount();
+      const addr = await handleConnect();
       if (addr) {
         setAddress(addr)
       }

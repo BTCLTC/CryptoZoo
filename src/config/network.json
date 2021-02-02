@@ -1,0 +1,12 @@
+[
+  {
+    "chainID": 4,
+    "chainName": "Rinkeby网络",
+    "contractAddress": "0xFe4223aD6118B67ac82d4bA8a2Aa75827D7D48E2"
+  },
+  {
+    "chainID": 97,
+    "chainName": "币安智能链测试网",
+    "contractAddress": "0xb957D74d6dA9333fEc559c0618C3a6BEAe1Ec903"
+  }
+]
