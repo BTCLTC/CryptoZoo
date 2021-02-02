@@ -20,9 +20,21 @@ export const getSignerContract = () => {
 }
 
 /**
+ * 获取砸蛋价格
+ */
+export const getEggPrice = async () => {
+  const contract = getContract();
+
+  return await contract.eggPrice();
+}
+
+/**
  * 创建动物，开蛋
  */
 export const create = async () => {
+
+  const price = await getEggPrice();
+  console.log(price);
 
   const contract = getSignerContract()
   const tx = await contract.create({ value: toWei('0.01') });
