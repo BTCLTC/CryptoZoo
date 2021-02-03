@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useIntl } from 'umi';
 import { Empty, Spin, Modal, message, notification } from 'antd';
 import AnimalCard from '@/components/animal-card';
 import Loading from '@/components/loading';
@@ -20,6 +21,8 @@ export default () => {
   const [page, setPage] = React.useState(0);
   const [data, setData] = React.useState<Data[]>([]);
   const { address } = useUser();
+
+  const intl = useIntl();
 
   const onLevelItemClick = React.useCallback((id: number) => {
     setLevel(id);
@@ -118,7 +121,14 @@ export default () => {
   return (
     <div>
       <div className={styles['level-container']}>
-        <span className={styles.level} >所属级别</span>
+        <span className={styles.level} >
+          {intl.formatMessage(
+            {
+              id: 'profile.level.label',
+              defaultMessage: '所属级别',
+            },
+          )}
+        </span>
         <div className={styles['level-list']}>
           {
             LevelListData.map(item => <span key={item.id} className={level === item.id ? `${styles['level-list-item']} ${styles['level-list-item-active']}` : styles['level-list-item']} onClick={() => onLevelItemClick(item.id)}>{item.title}</span>)
