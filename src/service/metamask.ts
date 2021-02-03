@@ -1,3 +1,5 @@
+import { message } from 'antd';
+import { formatMessage } from 'umi';
 import { fromWei, hexToNumberString } from 'web3-utils';
 import { isNetworkAvailable } from '@/config';
 
@@ -9,12 +11,18 @@ let timer: NodeJS.Timeout | null = null;
 export const handleConnect = async (): Promise<string | void> => {
   if (!window.ethereum || !window.ethereum.isMetaMask) {
     // 没有安装metamask
-    alert('请先安装metamask!');
+    message.info(formatMessage({
+      id: 'notice.metamask.install',
+      defaultMessage: '请先安装metamask',
+    }));
   } else if (window.ethereum && await isUnlocked()) {
     return await getAccount();
   } else {
     // 钱包被锁定提示
-    alert('请先metamask解锁钱包');
+    message.info(formatMessage({
+      id: 'notice.metamask.lock',
+      defaultMessage: 'metamask钱包被锁定，请先解锁',
+    }));
   }
 }
 
@@ -68,7 +76,10 @@ export const getNetwork = async (): Promise<void> => {
       clearTimeout(timer);
     }
     timer = setTimeout(() => {
-      alert('请使用metamask，选择 BSC-testnet/Rinkeby 网络');
+      message.info(formatMessage({
+        id: 'notice.metamask.network',
+        defaultMessage: '请使用metamask，选择 BSC-testnet/Rinkeby 网络',
+      }));
     }, 2000);
   }
 }
@@ -96,10 +107,16 @@ export const checkWallet = async (): Promise<void> => {
   const unlocked = await isUnlocked()
   if (unlocked) {
     // 钱包没有创建账户
-    alert('钱包没有创建账户');
+    message.info(formatMessage({
+      id: 'notice.metamask.account',
+      defaultMessage: '钱包没有创建账户',
+    }));
   } else {
     // 钱包被锁定提示
-    alert('钱包被锁定');
+    message.info(formatMessage({
+      id: 'notice.metamask.lock',
+      defaultMessage: 'metamask钱包被锁定，请先解锁',
+    }));
   }
 }
 
@@ -127,7 +144,10 @@ export const walletListener = (): void => {
         clearTimeout(timer);
       }
       timer = setTimeout(() => {
-        alert('请使用metamask，选择 BSC-testnet/Rinkeby 网络');
+        message.info(formatMessage({
+          id: 'notice.metamask.network',
+          defaultMessage: '请使用metamask，选择 BSC-testnet/Rinkeby 网络',
+        }));
       }, 2000);
     }
   })
