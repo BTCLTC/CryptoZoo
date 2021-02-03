@@ -1,29 +1,12 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import { useIntl } from 'umi';
 import Loading from '@/components/loading';
 import AnimalCard from '@/components/animal-card';
 import useUser from '@/hooks/user';
-import { getIsSale, getIsOnPurchased } from '@/service/nft'
+import { LevelListData } from '@/data';
+import { getIsSale } from '@/service/nft'
 
 import styles from './styles.less';
-
-export const LevelListData = [
-  {
-    title: '二级',
-    id: 2,
-  },
-  {
-    title: '三级',
-    id: 3,
-  },
-  {
-    title: '四级',
-    id: 4,
-  },
-  {
-    title: '五级',
-    id: 5,
-  },
-];
 
 export default () => {
   const { address } = useUser();
@@ -31,6 +14,8 @@ export default () => {
   const [type, setType] = useState('buy' as 'buy' | 'sell');
   const [level, setLevel] = useState(2);
   const [marketData, setMarketData] = useState([]);
+
+  const intl = useIntl();
 
   useEffect(() => {
     init();
@@ -42,9 +27,9 @@ export default () => {
     }
   }
 
-  const getLevelData = async (level: number) => {
+  const getLevelData = async (_level: number) => {
     setLoading(true);
-    const buyData = await getIsSale(level).catch(() => {
+    const buyData = await getIsSale(_level).catch(() => {
       setLoading(false);
     });
     if (buyData) {
@@ -52,11 +37,6 @@ export default () => {
     }
     setLoading(false);
   }
-
-  // 点击购买/出售
-  const onTypeClick = useCallback((_type: 'buy' | 'sell') => {
-    setType(_type);
-  }, [type]);
 
   // 点击等级
   const onLevelItemClick = useCallback((id: number) => {
@@ -81,17 +61,32 @@ export default () => {
   }
 
   const dataSource = useMemo(handleData, [type, level, marketData]);
+  const levelData = LevelListData.filter((item) => item.id != 1);
 
   return (
     <div>
       <div className={styles['type-container']}>
-        <span className={`${styles['type-buy']}  ${styles['type-active']}`}>购买</span>
+        <span className={`${styles['type-buy']}  ${styles['type-active']}`}>{
+          intl.formatMessage(
+            {
+              id: 'market.type',
+              defaultMessage: '购买',
+            },
+          )
+        }</span>
       </div>
       <div className={styles['level-container']}>
-        <span className={styles.level} >所属级别</span>
+        <span className={styles.level} >{
+          intl.formatMessage(
+            {
+              id: 'profile.level.label',
+              defaultMessage: '所属级别',
+            },
+          )
+        }</span>
         <div className={styles['level-list']}>
           {
-            LevelListData.map(item => <span key={item.id} className={level === item.id ? `${styles['level-list-item']} ${styles['level-list-item-active']}` : styles['level-list-item']} onClick={() => onLevelItemClick(item.id)}>{item.title}</span>)
+            levelData.map(item => <span key={item.id} className={level === item.id ? `${styles['level-list-item']} ${styles['level-list-item-active']}` : styles['level-list-item']} onClick={() => onLevelItemClick(item.id)}>{item.title}</span>)
           }
         </div>
       </div>

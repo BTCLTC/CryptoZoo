@@ -1,6 +1,7 @@
 export default {
   'site.title': 'CryptoZoo',
   'market.title': 'CryptoZoo - 市场',
+  'market.type': '购买',
   'profile.title': 'CryptoZoo - 个人中心',
   'profile.level.label': '所属级别',
   'notice.metamask.install': '请先安装metamask',

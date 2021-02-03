@@ -1,6 +1,7 @@
 export default {
   'site.title': 'CryptoZoo',
   'market.title': 'CryptoZoo - Market',
+  'market.type': 'Buy',
   'profile.title': 'CryptoZoo - Profile',
   'profile.level.label': 'Level',
   'notice.metamask.install': 'Please install metamask',
