@@ -1,6 +1,6 @@
 import React from 'react';
 import useUser from '@/hooks/user';
-import { getAccount } from '@/service/metamask';
+import { handleConnect } from '@/service/metamask';
 
 import styles from './styles.less';
 
@@ -19,7 +19,7 @@ export default function UnlockButton() {
   const { address, setAddress, } = useUser();
   const onClick = React.useCallback(async () => {
     if(!address) {
-      const addr = await getAccount();
+      const addr = await handleConnect();
       addr && setAddress(addr);
     }
   }, [address]);

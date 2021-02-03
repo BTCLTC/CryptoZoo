@@ -17,7 +17,7 @@ import unlockBtn from '../../assets/images/unlock_btn.png';
 
 import styles from './styles.less';
 
-import { getAccount } from '@/service/metamask'
+import { handleConnect } from '@/service/metamask'
 import { create } from '../../service/nft'
 
 export default () => {
@@ -30,8 +30,8 @@ export default () => {
 
   const onClick = useCallback(async () => {
     if (address) {
-      setLoading(true);
-      const data = await create().catch(() => { });
+      setLoading(true)
+      const data = await create().catch((e) => {console.log(e)});
       if (data && data.tx.wait) {
         // 监听砸蛋成功事件
         data.contract.on('Creat', (_address, animal: zooType, tokenID, event) => {
@@ -56,7 +56,7 @@ export default () => {
         });
       }
     } else {
-      const addr = await getAccount();
+      const addr = await handleConnect();
       if (addr) {
         setAddress(addr)
       }

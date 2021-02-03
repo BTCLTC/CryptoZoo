@@ -44,8 +44,12 @@ export default () => {
 
   const getLevelData = async (level: number) => {
     setLoading(true);
-    const buyData = await getIsSale(level);
-    setMarketData(buyData);
+    const buyData = await getIsSale(level).catch(() => {
+      setLoading(false);
+    });
+    if (buyData) {
+      setMarketData(buyData);
+    }
     setLoading(false);
   }
 
