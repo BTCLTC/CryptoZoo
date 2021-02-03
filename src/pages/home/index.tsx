@@ -6,6 +6,7 @@ import useUser from '@/hooks/user';
 import UnlockButton from '@/components/unlock-button';
 import { zoo, zooType } from '@/data';
 import { getAnimalBg } from '@/components/animal-card';
+import ChangeLocale from '@/components/change-locale';
 
 import logo from '../../assets/images/logo.png';
 import homeBtn from '../../assets/images/home-btn.png';
@@ -29,7 +30,7 @@ export default () => {
 
   const onClick = useCallback(async () => {
     if (address) {
-      setLoading(true);
+      setLoading(true)
       const data = await create().catch((e) => {console.log(e)});
       if (data && data.tx.wait) {
         // 监听砸蛋成功事件
@@ -69,10 +70,13 @@ export default () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.bg}/>
+      <div className={styles.bg} />
       <nav className={styles.nav}>
         <img src={logo} />
-        <UnlockButton />
+        <div style={{ display: 'flex' }}>
+          <ChangeLocale />
+          <UnlockButton />
+        </div>
       </nav>
 
       <div className={styles['route-btn']}>
@@ -85,16 +89,16 @@ export default () => {
         </NavLink>
       </div>
 
-      <div className={ isModalVisible ? `${styles['egg-container']} ${styles['hide']}` : styles['egg-container']}>
+      <div className={isModalVisible ? `${styles['egg-container']} ${styles['hide']}` : styles['egg-container']}>
         <div onClick={onClick} className={styles.egg}></div>
       </div>
 
       <div className={styles['home-btn']}>
         {address ? <div>
-          <img src={buyBtn} onClick={onClick} alt="buy"/>
+          <img src={buyBtn} onClick={onClick} alt="buy" />
         </div> : <div>
-          <img src={unlockBtn} onClick={onClick} alt="unlock"/>
-        </div>}
+            <img src={unlockBtn} onClick={onClick} alt="unlock" />
+          </div>}
       </div>
 
       {loading && <Loading content="砸蛋中..." />}
